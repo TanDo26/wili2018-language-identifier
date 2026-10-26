@@ -1,0 +1,16 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models:ro
+
+  # web:   # D bổ sung khi chọn xong công nghệ cho web/
+  #   build: ./web
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - api

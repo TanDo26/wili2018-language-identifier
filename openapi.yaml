@@ -1,0 +1,20 @@
+openapi: 3.0.3
+info:
+  title: HTTM API
+  version: 0.1.0
+  description: Thỏa thuận API giữa C (backend) và D (web).
+paths:
+  /health:
+    get:
+      summary: Kiểm tra API còn hoạt động
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok

@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+pydantic
+scikit-learn
+pandas
+joblib
+
+# dev / test
+pytest
+httpx

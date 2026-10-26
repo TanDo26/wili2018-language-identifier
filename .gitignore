@@ -1,0 +1,13 @@
+# Mô hình đã train – không đưa lên git
+models/*
+!models/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Môi trường
+.env

@@ -1,12 +1,14 @@
 openapi: 3.0.3
 info:
-  title: HTTM API
+  title: HTTM API - Language Identification System
   version: 0.1.0
-  description: Thỏa thuận API giữa C (backend) và D (web).
+  description: Thỏa thuận API chuẩn giữa C (Backend - Ngọc Bảo) và D (Frontend - Đại Hưng).
+
 paths:
   /health:
     get:
       summary: Kiểm tra API còn hoạt động
+      operationId: checkHealth
       responses:
         "200":
           description: OK
@@ -18,3 +20,306 @@ paths:
                   status:
                     type: string
                     example: ok
+
+  /api/v1/predict:
+    post:
+      summary: Dự đoán ngôn ngữ cho 1 đoạn văn bản
+      operationId: predictLanguage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PredictRequest'
+      responses:
+        "200":
+          description: Dự đoán thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PredictResponse'
+        "400":
+          $ref: '#/components/responses/400BadRequest'
+        "413":
+          $ref: '#/components/responses/413PayloadTooLarge'
+        "429":
+          $ref: '#/components/responses/429TooManyRequests'
+        "503":
+          $ref: '#/components/responses/503ServiceUnavailable'
+
+  /api/v1/predict-batch:
+    post:
+      summary: Dự đoán ngôn ngữ cho hàng loạt văn bản (Batch Processing)
+      operationId: predictLanguageBatch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchPredictRequest'
+      responses:
+        "200":
+          description: Xử lý batch thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchPredictResponse'
+        "400":
+          $ref: '#/components/responses/400BadRequest'
+        "413":
+          $ref: '#/components/responses/413PayloadTooLarge'
+        "429":
+          $ref: '#/components/responses/429TooManyRequests'
+        "503":
+          $ref: '#/components/responses/503ServiceUnavailable'
+
+  /api/v1/report:
+    post:
+      summary: Người dùng gửi phản hồi về kết quả dự đoán sai
+      operationId: reportIncorrectPrediction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+      responses:
+        "201":
+          description: Đã ghi nhận báo cáo vào SQLite thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Report saved successfully"
+                  report_id:
+                    type: integer
+                    example: 101
+
+  /api/v1/models:
+    get:
+      summary: Lấy danh sách tất cả các phiên bản mô hình (Console DS)
+      operationId: listModels
+      responses:
+        "200":
+          description: Danh sách các mô hình
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ModelVersion'
+
+  /api/v1/models/promote:
+    post:
+      summary: Promote 1 mô hình lên làm mô hình chính (Console DS)
+      operationId: promoteModel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - version
+              properties:
+                version:
+                  type: string
+                  example: "v2"
+      responses:
+        "200":
+          description: Promote thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Promoted model v2 to active successfully"
+                  active_version:
+                    type: string
+                    example: "v2"
+
+  /api/v1/models/rollback:
+    post:
+      summary: Rollback về phiên bản mô hình trước đó (Console DS)
+      operationId: rollbackModel
+      responses:
+        "200":
+          description: Rollback thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Rolled back to model v1 successfully"
+                  active_version:
+                    type: string
+                    example: "v1"
+
+components:
+  schemas:
+    PredictRequest:
+      type: object
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          minLength: 20
+          maxLength: 5000
+          description: Văn bản đầu vào (từ 20 đến 5000 ký tự)
+          example: "This is a sample text to test language classification."
+
+    Candidate:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "eng"
+        name:
+          type: string
+          example: "English"
+        confidence:
+          type: number
+          format: float
+          example: 0.95
+
+    PredictResponse:
+      type: object
+      properties:
+        language_code:
+          type: string
+          example: "eng"
+        language_name:
+          type: string
+          example: "English"
+        confidence:
+          type: number
+          format: float
+          example: 0.95
+        is_unsure:
+          type: boolean
+          description: True nếu độ tin cậy thấp hơn ngưỡng quy định (ví dụ < 0.4)
+          example: false
+        explanation:
+          type: array
+          items:
+            type: string
+          description: Lý do mô hình phân loại (các n-gram ký tự đặc trưng)
+          example: ["Contains common English trigrams: 'thi', 'his', 'sam'"]
+        top_candidates:
+          type: array
+          items:
+            $ref: '#/components/schemas/Candidate'
+
+    BatchPredictRequest:
+      type: object
+      required:
+        - texts
+      properties:
+        texts:
+          type: array
+          items:
+            type: string
+            minLength: 20
+            maxLength: 5000
+          example: ["First sample text to test language.", "Le français est một ngôn ngữ tuyệt vời."]
+
+    BatchPredictResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PredictResponse'
+
+    ReportRequest:
+      type: object
+      required:
+        - text
+        - predicted_language
+        - correct_language
+      properties:
+        text:
+          type: string
+          example: "Văn bản bị đoán sai"
+        predicted_language:
+          type: string
+          example: "vie"
+        correct_language:
+          type: string
+          example: "eng"
+        user_feedback:
+          type: string
+          example: "Đây là tiếng Anh pha tiếng Việt"
+
+    ModelVersion:
+      type: object
+      properties:
+        version:
+          type: string
+          example: "v1"
+        algorithm:
+          type: string
+          example: "Multinomial Naive Bayes"
+        is_active:
+          type: boolean
+          example: true
+        accuracy:
+          type: number
+          format: float
+          example: 0.925
+        macro_f1:
+          type: number
+          format: float
+          example: 0.918
+
+    ErrorResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+          example: "Error description"
+
+  responses:
+    400BadRequest:
+      description: Lỗi dữ liệu đầu vào (Văn bản rỗng hoặc dưới 20 ký tự)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            detail: "Text length must be between 20 and 5000 characters."
+
+    413PayloadTooLarge:
+      description: Văn bản quá dài (vượt quá 5000 ký tự)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            detail: "Text length exceeds maximum allowed limit of 5000 characters."
+
+    429TooManyRequests:
+      description: Quá tần suất gọi API
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            detail: "Rate limit exceeded. Please try again later."
+
+    503ServiceUnavailable:
+      description: Mô hình ML chưa được nạp hoặc hệ thống đang bận
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            detail: "Model is not loaded or system is currently unavailable."

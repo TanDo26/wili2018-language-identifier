@@ -1,0 +1,2538 @@
+{
+  "splits": {
+    "train": {
+      "num_samples": 100724,
+      "num_languages": 235,
+      "per_language": {
+        "min": 30,
+        "max": 450,
+        "mean": 428.61,
+        "fewest": {
+          "che": 30,
+          "hat": 46,
+          "new": 85,
+          "pam": 153,
+          "srn": 164,
+          "ido": 219,
+          "min": 288,
+          "hsb": 326,
+          "sun": 331,
+          "bpy": 336
+        }
+      },
+      "length_chars": {
+        "count": 100724,
+        "min": 140,
+        "p5": 148.0,
+        "p25": 191.0,
+        "median": 275.0,
+        "mean": 373.9,
+        "p75": 437.0,
+        "p95": 878.85,
+        "max": 40578
+      },
+      "length_buckets": {
+        "0-199": 0.2813,
+        "200-499": 0.5247,
+        "500-999": 0.1594,
+        "1000-4999": 0.034,
+        ">=5000": 0.0007
+      },
+      "exact_duplicates": 0,
+      "not_nfc": 0
+    },
+    "val": {
+      "num_samples": 11725,
+      "num_languages": 235,
+      "per_language": {
+        "min": 29,
+        "max": 50,
+        "mean": 49.89,
+        "fewest": {
+          "che": 29,
+          "hat": 46,
+          "ukr": 50,
+          "sco": 50,
+          "lat": 50,
+          "urd": 50,
+          "bos": 50,
+          "tha": 50,
+          "ilo": 50,
+          "gle": 50
+        }
+      },
+      "length_chars": {
+        "count": 11725,
+        "min": 140,
+        "p5": 148.0,
+        "p25": 192.0,
+        "median": 275.0,
+        "mean": 371.3,
+        "p75": 432.0,
+        "p95": 848.0,
+        "max": 34656
+      },
+      "length_buckets": {
+        "0-199": 0.2784,
+        "200-499": 0.5359,
+        "500-999": 0.1545,
+        "1000-4999": 0.0305,
+        ">=5000": 0.0008
+      },
+      "exact_duplicates": 0,
+      "not_nfc": 0
+    },
+    "test": {
+      "num_samples": 113283,
+      "num_languages": 235,
+      "per_language": {
+        "min": 66,
+        "max": 500,
+        "mean": 482.06,
+        "fewest": {
+          "che": 66,
+          "hat": 96,
+          "new": 164,
+          "srn": 230,
+          "ido": 281,
+          "pam": 316,
+          "min": 344,
+          "hsb": 379,
+          "sun": 385,
+          "bpy": 387
+        }
+      },
+      "length_chars": {
+        "count": 113283,
+        "min": 140,
+        "p5": 148.0,
+        "p25": 191.0,
+        "median": 274.0,
+        "mean": 376.54,
+        "p75": 436.0,
+        "p95": 878.0,
+        "max": 195402
+      },
+      "length_buckets": {
+        "0-199": 0.2819,
+        "200-499": 0.5247,
+        "500-999": 0.159,
+        "1000-4999": 0.0338,
+        ">=5000": 0.0007
+      },
+      "exact_duplicates": 0,
+      "not_nfc": 0
+    }
+  },
+  "overlap": {
+    "train_rows_in_test": 0,
+    "conflicting_label_texts": 0
+  },
+  "languages": [
+    {
+      "code": "ace",
+      "name": "Achinese",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 228.5,
+      "train": 447,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "afr",
+      "name": "Afrikaans",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 355.0,
+      "train": 446,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "als",
+      "name": "Alemannic German",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 279.5,
+      "train": 443,
+      "val": 50,
+      "test": 489
+    },
+    {
+      "code": "amh",
+      "name": "Amharic",
+      "family": "Afro-Asiatic",
+      "script": "Ethiopic",
+      "median_length": 233.5,
+      "train": 437,
+      "val": 50,
+      "test": 495
+    },
+    {
+      "code": "ang",
+      "name": "Old English",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 240.5,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "ara",
+      "name": "Arabic",
+      "family": "Afro-Asiatic",
+      "script": "Arabic",
+      "median_length": 344.5,
+      "train": 450,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "arg",
+      "name": "Aragonese",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 252.5,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "arz",
+      "name": "Egyptian Arabic",
+      "family": "Afro-Asiatic",
+      "script": "Arabic",
+      "median_length": 288.0,
+      "train": 450,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "asm",
+      "name": "Assamese",
+      "family": "Indo-European",
+      "script": "Bengali",
+      "median_length": 324.0,
+      "train": 448,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "ast",
+      "name": "Asturian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 340.0,
+      "train": 450,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "ava",
+      "name": "Avar",
+      "family": "Northeast Caucasian",
+      "script": "Cyrillic",
+      "median_length": 275.0,
+      "train": 361,
+      "val": 50,
+      "test": 416
+    },
+    {
+      "code": "aym",
+      "name": "Aymara",
+      "family": "Aymaran",
+      "script": "Latin",
+      "median_length": 168.0,
+      "train": 449,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "azb",
+      "name": "South Azerbaijani",
+      "family": "Turkic",
+      "script": "Arabic",
+      "median_length": 206.0,
+      "train": 436,
+      "val": 50,
+      "test": 485
+    },
+    {
+      "code": "aze",
+      "name": "Azerbaijani",
+      "family": "Turkic",
+      "script": "Latin",
+      "median_length": 294.5,
+      "train": 449,
+      "val": 50,
+      "test": 497
+    },
+    {
+      "code": "bak",
+      "name": "Bashkir",
+      "family": "Turkic",
+      "script": "Cyrillic",
+      "median_length": 239.0,
+      "train": 348,
+      "val": 50,
+      "test": 419
+    },
+    {
+      "code": "bar",
+      "name": "Bavarian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 237.0,
+      "train": 447,
+      "val": 50,
+      "test": 492
+    },
+    {
+      "code": "bcl",
+      "name": "Central Bikol",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 329.0,
+      "train": 417,
+      "val": 50,
+      "test": 475
+    },
+    {
+      "code": "be-tarask",
+      "name": "Belarusian (Taraschkewiza)",
+      "family": "Indo-European",
+      "script": "Cyrillic",
+      "median_length": 284.0,
+      "train": 446,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "bel",
+      "name": "Belarusian",
+      "family": "Indo-European",
+      "script": "Cyrillic",
+      "median_length": 286.0,
+      "train": 442,
+      "val": 50,
+      "test": 493
+    },
+    {
+      "code": "ben",
+      "name": "Bengali",
+      "family": "Indo-European",
+      "script": "Bengali",
+      "median_length": 316.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "bho",
+      "name": "Bhojpuri",
+      "family": "Indo-European",
+      "script": "Devanagari",
+      "median_length": 263.0,
+      "train": 445,
+      "val": 50,
+      "test": 496
+    },
+    {
+      "code": "bjn",
+      "name": "Banjar",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 330.0,
+      "train": 442,
+      "val": 50,
+      "test": 496
+    },
+    {
+      "code": "bod",
+      "name": "Tibetan",
+      "family": "Sino-Tibetan",
+      "script": "Tibetan",
+      "median_length": 527.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "bos",
+      "name": "Bosnian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 339.0,
+      "train": 449,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "bpy",
+      "name": "Bishnupriya",
+      "family": "Indo-European",
+      "script": "Bengali",
+      "median_length": 198.0,
+      "train": 336,
+      "val": 50,
+      "test": 387
+    },
+    {
+      "code": "bre",
+      "name": "Breton",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 236.0,
+      "train": 449,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "bul",
+      "name": "Bulgarian",
+      "family": "Indo-European",
+      "script": "Cyrillic",
+      "median_length": 322.0,
+      "train": 444,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "bxr",
+      "name": "Buryat",
+      "family": "Mongolic",
+      "script": "Cyrillic",
+      "median_length": 346.0,
+      "train": 447,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "cat",
+      "name": "Catalan",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 325.0,
+      "train": 424,
+      "val": 50,
+      "test": 489
+    },
+    {
+      "code": "cbk",
+      "name": "Chavacano",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 327.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "cdo",
+      "name": "Min Dong",
+      "family": "Sino-Tibetan",
+      "script": "Latin",
+      "median_length": 244.5,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "ceb",
+      "name": "Cebuano",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 295.0,
+      "train": 423,
+      "val": 50,
+      "test": 496
+    },
+    {
+      "code": "ces",
+      "name": "Czech",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 324.0,
+      "train": 450,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "che",
+      "name": "Chechen",
+      "family": "Northeast Caucasian",
+      "script": "Cyrillic",
+      "median_length": 197.0,
+      "train": 30,
+      "val": 29,
+      "test": 66
+    },
+    {
+      "code": "chr",
+      "name": "Cherokee",
+      "family": "Iroquoian",
+      "script": "Cherokee",
+      "median_length": 365.0,
+      "train": 442,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "chv",
+      "name": "Chuvash",
+      "family": "Turkic",
+      "script": "Cyrillic",
+      "median_length": 196.0,
+      "train": 367,
+      "val": 50,
+      "test": 433
+    },
+    {
+      "code": "ckb",
+      "name": "Central Kurdish",
+      "family": "Indo-European",
+      "script": "Arabic",
+      "median_length": 303.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "cor",
+      "name": "Cornish",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 221.0,
+      "train": 447,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "cos",
+      "name": "Corsican",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 286.0,
+      "train": 448,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "crh",
+      "name": "Crimean Tatar",
+      "family": "Turkic",
+      "script": "Latin",
+      "median_length": 190.0,
+      "train": 446,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "csb",
+      "name": "Kashubian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 274.0,
+      "train": 388,
+      "val": 50,
+      "test": 453
+    },
+    {
+      "code": "cym",
+      "name": "Welsh",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 269.0,
+      "train": 430,
+      "val": 50,
+      "test": 487
+    },
+    {
+      "code": "dan",
+      "name": "Danish",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 340.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "deu",
+      "name": "German",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 326.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "diq",
+      "name": "Dimli",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 280.5,
+      "train": 449,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "div",
+      "name": "Dhivehi",
+      "family": "Indo-European",
+      "script": "Thaana",
+      "median_length": 362.5,
+      "train": 447,
+      "val": 50,
+      "test": 497
+    },
+    {
+      "code": "dsb",
+      "name": "Lower Sorbian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 232.0,
+      "train": 446,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "dty",
+      "name": "Doteli",
+      "family": "Indo-European",
+      "script": "Devanagari",
+      "median_length": 317.5,
+      "train": 444,
+      "val": 50,
+      "test": 492
+    },
+    {
+      "code": "egl",
+      "name": "Emilian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 288.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "ell",
+      "name": "Modern Greek",
+      "family": "Indo-European",
+      "script": "Greek",
+      "median_length": 390.0,
+      "train": 448,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "eng",
+      "name": "English",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 353.5,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "epo",
+      "name": "Esperanto",
+      "family": "Constructed",
+      "script": "Latin",
+      "median_length": 274.5,
+      "train": 449,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "est",
+      "name": "Estonian",
+      "family": "Uralic",
+      "script": "Latin",
+      "median_length": 250.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "eus",
+      "name": "Basque",
+      "family": "Language isolate",
+      "script": "Latin",
+      "median_length": 287.5,
+      "train": 387,
+      "val": 50,
+      "test": 471
+    },
+    {
+      "code": "ext",
+      "name": "Extremaduran",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 279.5,
+      "train": 449,
+      "val": 50,
+      "test": 497
+    },
+    {
+      "code": "fao",
+      "name": "Faroese",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 340.0,
+      "train": 431,
+      "val": 50,
+      "test": 482
+    },
+    {
+      "code": "fas",
+      "name": "Persian",
+      "family": "Indo-European",
+      "script": "Arabic",
+      "median_length": 314.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "fin",
+      "name": "Finnish",
+      "family": "Uralic",
+      "script": "Latin",
+      "median_length": 342.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "fra",
+      "name": "French",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 332.0,
+      "train": 444,
+      "val": 50,
+      "test": 496
+    },
+    {
+      "code": "frp",
+      "name": "Arpitan",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 238.5,
+      "train": 446,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "fry",
+      "name": "Western Frisian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 359.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "fur",
+      "name": "Friulian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 253.0,
+      "train": 445,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "gag",
+      "name": "Gagauz",
+      "family": "Turkic",
+      "script": "Latin",
+      "median_length": 248.5,
+      "train": 439,
+      "val": 50,
+      "test": 497
+    },
+    {
+      "code": "gla",
+      "name": "Scottish Gaelic",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 307.0,
+      "train": 445,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "gle",
+      "name": "Irish",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 319.0,
+      "train": 447,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "glg",
+      "name": "Galician",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 318.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "glk",
+      "name": "Gilaki",
+      "family": "Indo-European",
+      "script": "Arabic",
+      "median_length": 278.0,
+      "train": 440,
+      "val": 50,
+      "test": 496
+    },
+    {
+      "code": "glv",
+      "name": "Manx",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 334.5,
+      "train": 446,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "grn",
+      "name": "Guarani",
+      "family": "Tupi-Guarani",
+      "script": "Latin",
+      "median_length": 244.0,
+      "train": 448,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "guj",
+      "name": "Gujarati",
+      "family": "Indo-European",
+      "script": "Gujarati",
+      "median_length": 434.0,
+      "train": 446,
+      "val": 50,
+      "test": 497
+    },
+    {
+      "code": "hak",
+      "name": "Hakka Chinese",
+      "family": "Sino-Tibetan",
+      "script": "Latin",
+      "median_length": 258.0,
+      "train": 444,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "hat",
+      "name": "Haitian Creole",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 212.0,
+      "train": 46,
+      "val": 46,
+      "test": 96
+    },
+    {
+      "code": "hau",
+      "name": "Hausa",
+      "family": "Afro-Asiatic",
+      "script": "Latin",
+      "median_length": 321.0,
+      "train": 439,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "hbs",
+      "name": "Serbo-Croatian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 317.0,
+      "train": 443,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "heb",
+      "name": "Hebrew",
+      "family": "Afro-Asiatic",
+      "script": "Hebrew",
+      "median_length": 311.0,
+      "train": 450,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "hif",
+      "name": "Fiji Hindi",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 217.0,
+      "train": 438,
+      "val": 50,
+      "test": 496
+    },
+    {
+      "code": "hin",
+      "name": "Hindi",
+      "family": "Indo-European",
+      "script": "Devanagari",
+      "median_length": 386.0,
+      "train": 442,
+      "val": 50,
+      "test": 496
+    },
+    {
+      "code": "hrv",
+      "name": "Croatian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 333.0,
+      "train": 443,
+      "val": 50,
+      "test": 494
+    },
+    {
+      "code": "hsb",
+      "name": "Upper Sorbian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 227.0,
+      "train": 326,
+      "val": 50,
+      "test": 379
+    },
+    {
+      "code": "hun",
+      "name": "Hungarian",
+      "family": "Uralic",
+      "script": "Latin",
+      "median_length": 358.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "hye",
+      "name": "Armenian",
+      "family": "Indo-European",
+      "script": "Armenian",
+      "median_length": 300.0,
+      "train": 422,
+      "val": 50,
+      "test": 489
+    },
+    {
+      "code": "ibo",
+      "name": "Igbo",
+      "family": "Niger-Congo",
+      "script": "Latin",
+      "median_length": 224.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "ido",
+      "name": "Ido",
+      "family": "Constructed",
+      "script": "Latin",
+      "median_length": 267.0,
+      "train": 219,
+      "val": 50,
+      "test": 281
+    },
+    {
+      "code": "ile",
+      "name": "Interlingue",
+      "family": "Constructed",
+      "script": "Latin",
+      "median_length": 225.0,
+      "train": 429,
+      "val": 50,
+      "test": 469
+    },
+    {
+      "code": "ilo",
+      "name": "Iloko",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 359.0,
+      "train": 435,
+      "val": 50,
+      "test": 495
+    },
+    {
+      "code": "ina",
+      "name": "Interlingua",
+      "family": "Constructed",
+      "script": "Latin",
+      "median_length": 304.0,
+      "train": 442,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "ind",
+      "name": "Indonesian",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 338.0,
+      "train": 435,
+      "val": 50,
+      "test": 489
+    },
+    {
+      "code": "isl",
+      "name": "Icelandic",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 330.0,
+      "train": 426,
+      "val": 50,
+      "test": 492
+    },
+    {
+      "code": "ita",
+      "name": "Italian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 330.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "jam",
+      "name": "Jamaican Patois",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 349.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "jav",
+      "name": "Javanese",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 321.0,
+      "train": 448,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "jbo",
+      "name": "Lojban",
+      "family": "Constructed",
+      "script": "Latin",
+      "median_length": 200.0,
+      "train": 432,
+      "val": 50,
+      "test": 485
+    },
+    {
+      "code": "jpn",
+      "name": "Japanese",
+      "family": "Japonic",
+      "script": "CJK",
+      "median_length": 204.5,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "kaa",
+      "name": "Karakalpak",
+      "family": "Turkic",
+      "script": "Latin",
+      "median_length": 335.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "kab",
+      "name": "Kabyle",
+      "family": "Afro-Asiatic",
+      "script": "Latin",
+      "median_length": 235.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "kan",
+      "name": "Kannada",
+      "family": "Dravidian",
+      "script": "Kannada",
+      "median_length": 345.0,
+      "train": 444,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "kat",
+      "name": "Georgian",
+      "family": "South Caucasian",
+      "script": "Georgian",
+      "median_length": 308.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "kaz",
+      "name": "Kazakh",
+      "family": "Turkic",
+      "script": "Cyrillic",
+      "median_length": 249.0,
+      "train": 374,
+      "val": 50,
+      "test": 449
+    },
+    {
+      "code": "kbd",
+      "name": "Kabardian",
+      "family": "Northeast Caucasian",
+      "script": "Cyrillic",
+      "median_length": 231.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "khm",
+      "name": "Central Khmer",
+      "family": "Austronesian",
+      "script": "Khmer",
+      "median_length": 397.5,
+      "train": 449,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "kin",
+      "name": "Kinyarwanda",
+      "family": "Niger-Congo",
+      "script": "Latin",
+      "median_length": 258.0,
+      "train": 446,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "kir",
+      "name": "Kirghiz",
+      "family": "Turkic",
+      "script": "Cyrillic",
+      "median_length": 305.0,
+      "train": 393,
+      "val": 50,
+      "test": 454
+    },
+    {
+      "code": "koi",
+      "name": "Komi-Permyak",
+      "family": "Uralic",
+      "script": "Cyrillic",
+      "median_length": 200.5,
+      "train": 448,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "kok",
+      "name": "Konkani",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 408.0,
+      "train": 433,
+      "val": 50,
+      "test": 497
+    },
+    {
+      "code": "kom",
+      "name": "Komi",
+      "family": "Uralic",
+      "script": "Cyrillic",
+      "median_length": 200.0,
+      "train": 422,
+      "val": 50,
+      "test": 473
+    },
+    {
+      "code": "kor",
+      "name": "Korean",
+      "family": "Koreanic",
+      "script": "Hangul",
+      "median_length": 248.5,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "krc",
+      "name": "Karachay-Balkar",
+      "family": "Turkic",
+      "script": "Cyrillic",
+      "median_length": 282.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "ksh",
+      "name": "Ripuarisch",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 259.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "kur",
+      "name": "Kurdish",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 259.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "lad",
+      "name": "Ladino",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 317.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "lao",
+      "name": "Lao",
+      "family": "Tai-Kadai",
+      "script": "Lao",
+      "median_length": 326.0,
+      "train": 441,
+      "val": 50,
+      "test": 497
+    },
+    {
+      "code": "lat",
+      "name": "Latin",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 253.0,
+      "train": 425,
+      "val": 50,
+      "test": 478
+    },
+    {
+      "code": "lav",
+      "name": "Latvian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 323.5,
+      "train": 448,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "lez",
+      "name": "Lezghian",
+      "family": "Northeast Caucasian",
+      "script": "Cyrillic",
+      "median_length": 261.0,
+      "train": 439,
+      "val": 50,
+      "test": 490
+    },
+    {
+      "code": "lij",
+      "name": "Ligurian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 284.0,
+      "train": 450,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "lim",
+      "name": "Limburgan",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 309.0,
+      "train": 353,
+      "val": 50,
+      "test": 412
+    },
+    {
+      "code": "lin",
+      "name": "Lingala",
+      "family": "Niger-Congo",
+      "script": "Latin",
+      "median_length": 228.0,
+      "train": 443,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "lit",
+      "name": "Lithuanian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 277.0,
+      "train": 447,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "lmo",
+      "name": "Lombard",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 233.0,
+      "train": 411,
+      "val": 50,
+      "test": 472
+    },
+    {
+      "code": "lrc",
+      "name": "Northern Luri",
+      "family": "Indo-European",
+      "script": "Arabic",
+      "median_length": 295.0,
+      "train": 447,
+      "val": 50,
+      "test": 496
+    },
+    {
+      "code": "ltg",
+      "name": "Latgalian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 270.0,
+      "train": 444,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "ltz",
+      "name": "Luxembourgish",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 233.0,
+      "train": 445,
+      "val": 50,
+      "test": 497
+    },
+    {
+      "code": "lug",
+      "name": "Luganda",
+      "family": "Niger-Congo",
+      "script": "Latin",
+      "median_length": 256.0,
+      "train": 437,
+      "val": 50,
+      "test": 493
+    },
+    {
+      "code": "lzh",
+      "name": "Literary Chinese",
+      "family": "Sino-Tibetan",
+      "script": "CJK",
+      "median_length": 196.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "mai",
+      "name": "Maithili",
+      "family": "Indo-European",
+      "script": "Devanagari",
+      "median_length": 280.0,
+      "train": 447,
+      "val": 50,
+      "test": 495
+    },
+    {
+      "code": "mal",
+      "name": "Malayalam",
+      "family": "Dravidian",
+      "script": "Malayalam",
+      "median_length": 368.0,
+      "train": 450,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "map-bms",
+      "name": "Banyumasan",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 318.0,
+      "train": 447,
+      "val": 50,
+      "test": 497
+    },
+    {
+      "code": "mar",
+      "name": "Marathi",
+      "family": "Indo-European",
+      "script": "Devanagari",
+      "median_length": 283.0,
+      "train": 450,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "mdf",
+      "name": "Moksha",
+      "family": "Uralic",
+      "script": "Cyrillic",
+      "median_length": 294.0,
+      "train": 441,
+      "val": 50,
+      "test": 494
+    },
+    {
+      "code": "mhr",
+      "name": "Eastern Mari",
+      "family": "Uralic",
+      "script": "Cyrillic",
+      "median_length": 214.0,
+      "train": 443,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "min",
+      "name": "Minangkabau",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 170.0,
+      "train": 288,
+      "val": 50,
+      "test": 344
+    },
+    {
+      "code": "mkd",
+      "name": "Macedonian",
+      "family": "Indo-European",
+      "script": "Cyrillic",
+      "median_length": 326.0,
+      "train": 404,
+      "val": 50,
+      "test": 458
+    },
+    {
+      "code": "mlg",
+      "name": "Malagasy",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 339.0,
+      "train": 350,
+      "val": 50,
+      "test": 405
+    },
+    {
+      "code": "mlt",
+      "name": "Maltese",
+      "family": "Afro-Asiatic",
+      "script": "Latin",
+      "median_length": 385.5,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "mon",
+      "name": "Mongolian",
+      "family": "Mongolic",
+      "script": "Cyrillic",
+      "median_length": 310.0,
+      "train": 444,
+      "val": 50,
+      "test": 497
+    },
+    {
+      "code": "mri",
+      "name": "Maori",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 252.0,
+      "train": 429,
+      "val": 50,
+      "test": 487
+    },
+    {
+      "code": "mrj",
+      "name": "Western Mari",
+      "family": "Uralic",
+      "script": "Cyrillic",
+      "median_length": 182.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "msa",
+      "name": "Malay",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 309.0,
+      "train": 448,
+      "val": 50,
+      "test": 497
+    },
+    {
+      "code": "mwl",
+      "name": "Mirandese",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 354.5,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "mya",
+      "name": "Burmese",
+      "family": "Sino-Tibetan",
+      "script": "Myanmar",
+      "median_length": 404.0,
+      "train": 448,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "myv",
+      "name": "Erzya",
+      "family": "Uralic",
+      "script": "Cyrillic",
+      "median_length": 211.0,
+      "train": 442,
+      "val": 50,
+      "test": 497
+    },
+    {
+      "code": "mzn",
+      "name": "Mazanderani",
+      "family": "Indo-European",
+      "script": "Arabic",
+      "median_length": 232.0,
+      "train": 402,
+      "val": 50,
+      "test": 470
+    },
+    {
+      "code": "nan",
+      "name": "Min Nan Chinese",
+      "family": "Sino-Tibetan",
+      "script": "Latin",
+      "median_length": 173.0,
+      "train": 363,
+      "val": 50,
+      "test": 426
+    },
+    {
+      "code": "nap",
+      "name": "Neapolitan",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 262.0,
+      "train": 410,
+      "val": 50,
+      "test": 479
+    },
+    {
+      "code": "nav",
+      "name": "Navajo",
+      "family": "Dené-Yeniseian",
+      "script": "Latin",
+      "median_length": 185.0,
+      "train": 438,
+      "val": 50,
+      "test": 496
+    },
+    {
+      "code": "nci",
+      "name": "Classical Nahuatl",
+      "family": "Uto-Aztecan",
+      "script": "Latin",
+      "median_length": 272.0,
+      "train": 447,
+      "val": 50,
+      "test": 496
+    },
+    {
+      "code": "nds",
+      "name": "Low German",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 293.0,
+      "train": 414,
+      "val": 50,
+      "test": 476
+    },
+    {
+      "code": "nds-nl",
+      "name": "West Low German",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 310.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "nep",
+      "name": "Nepali (macrolanguage)",
+      "family": "Indo-European",
+      "script": "Devanagari",
+      "median_length": 328.0,
+      "train": 438,
+      "val": 50,
+      "test": 488
+    },
+    {
+      "code": "new",
+      "name": "Newari",
+      "family": "Sino-Tibetan",
+      "script": "Devanagari",
+      "median_length": 275.0,
+      "train": 85,
+      "val": 50,
+      "test": 164
+    },
+    {
+      "code": "nld",
+      "name": "Dutch",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 272.0,
+      "train": 447,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "nno",
+      "name": "Norwegian Nynorsk",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 283.0,
+      "train": 449,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "nob",
+      "name": "Bokmål",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 330.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "nrm",
+      "name": "Narom",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 233.0,
+      "train": 448,
+      "val": 50,
+      "test": 497
+    },
+    {
+      "code": "nso",
+      "name": "Northern Sotho",
+      "family": "Niger-Congo",
+      "script": "Latin",
+      "median_length": 212.0,
+      "train": 426,
+      "val": 50,
+      "test": 480
+    },
+    {
+      "code": "oci",
+      "name": "Occitan",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 284.5,
+      "train": 447,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "olo",
+      "name": "Livvi-Karelian",
+      "family": "Uralic",
+      "script": "Latin",
+      "median_length": 258.0,
+      "train": 448,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "ori",
+      "name": "Oriya",
+      "family": "Indo-European",
+      "script": "Oriya",
+      "median_length": 317.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "orm",
+      "name": "Oromo",
+      "family": "Afro-Asiatic",
+      "script": "Latin",
+      "median_length": 456.0,
+      "train": 448,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "oss",
+      "name": "Ossetian",
+      "family": "Indo-European",
+      "script": "Cyrillic",
+      "median_length": 255.0,
+      "train": 439,
+      "val": 50,
+      "test": 493
+    },
+    {
+      "code": "pag",
+      "name": "Pangasinan",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 233.0,
+      "train": 408,
+      "val": 50,
+      "test": 451
+    },
+    {
+      "code": "pam",
+      "name": "Pampanga",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 260.0,
+      "train": 153,
+      "val": 50,
+      "test": 316
+    },
+    {
+      "code": "pan",
+      "name": "Panjabi",
+      "family": "Indo-European",
+      "script": "Gurmukhi",
+      "median_length": 339.0,
+      "train": 449,
+      "val": 50,
+      "test": 497
+    },
+    {
+      "code": "pap",
+      "name": "Papiamento",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 313.0,
+      "train": 448,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "pcd",
+      "name": "Picard",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 172.0,
+      "train": 408,
+      "val": 50,
+      "test": 448
+    },
+    {
+      "code": "pdc",
+      "name": "Pennsylvania German",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 240.0,
+      "train": 443,
+      "val": 50,
+      "test": 488
+    },
+    {
+      "code": "pfl",
+      "name": "Palatine German",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 308.5,
+      "train": 449,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "pnb",
+      "name": "Western Panjabi",
+      "family": "Indo-European",
+      "script": "Arabic",
+      "median_length": 289.0,
+      "train": 416,
+      "val": 50,
+      "test": 469
+    },
+    {
+      "code": "pol",
+      "name": "Polish",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 302.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "por",
+      "name": "Portuguese",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 319.0,
+      "train": 448,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "pus",
+      "name": "Pushto",
+      "family": "Indo-European",
+      "script": "Arabic",
+      "median_length": 329.5,
+      "train": 446,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "que",
+      "name": "Quechua",
+      "family": "Quechuan",
+      "script": "Latin",
+      "median_length": 198.0,
+      "train": 351,
+      "val": 50,
+      "test": 426
+    },
+    {
+      "code": "roa-tara",
+      "name": "Tarantino dialect",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 319.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "roh",
+      "name": "Romansh",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 368.5,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "ron",
+      "name": "Romanian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 264.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "rue",
+      "name": "Rusyn",
+      "family": "Indo-European",
+      "script": "Cyrillic",
+      "median_length": 265.0,
+      "train": 447,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "rup",
+      "name": "Aromanian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 225.0,
+      "train": 450,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "rus",
+      "name": "Russian",
+      "family": "Indo-European",
+      "script": "Cyrillic",
+      "median_length": 314.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "sah",
+      "name": "Yakut",
+      "family": "Turkic",
+      "script": "Cyrillic",
+      "median_length": 297.5,
+      "train": 448,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "san",
+      "name": "Sanskrit",
+      "family": "Indo-European",
+      "script": "Devanagari",
+      "median_length": 341.0,
+      "train": 448,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "scn",
+      "name": "Sicilian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 255.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "sco",
+      "name": "Scots",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 288.0,
+      "train": 449,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "sgs",
+      "name": "Samogitian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 206.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "sin",
+      "name": "Sinhala",
+      "family": "Indo-European",
+      "script": "Sinhala",
+      "median_length": 351.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "slk",
+      "name": "Slovak",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 307.0,
+      "train": 445,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "slv",
+      "name": "Slovene",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 290.0,
+      "train": 436,
+      "val": 50,
+      "test": 491
+    },
+    {
+      "code": "sme",
+      "name": "Northern Sami",
+      "family": "Uralic",
+      "script": "Latin",
+      "median_length": 247.0,
+      "train": 419,
+      "val": 50,
+      "test": 472
+    },
+    {
+      "code": "sna",
+      "name": "Shona",
+      "family": "Niger-Congo",
+      "script": "Latin",
+      "median_length": 237.0,
+      "train": 443,
+      "val": 50,
+      "test": 497
+    },
+    {
+      "code": "snd",
+      "name": "Sindhi",
+      "family": "Indo-European",
+      "script": "Arabic",
+      "median_length": 363.0,
+      "train": 449,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "som",
+      "name": "Somali",
+      "family": "Afro-Asiatic",
+      "script": "Latin",
+      "median_length": 307.0,
+      "train": 432,
+      "val": 50,
+      "test": 495
+    },
+    {
+      "code": "spa",
+      "name": "Spanish",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 324.0,
+      "train": 447,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "sqi",
+      "name": "Albanian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 352.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "srd",
+      "name": "Sardinian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 291.5,
+      "train": 449,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "srn",
+      "name": "Sranan",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 241.5,
+      "train": 164,
+      "val": 50,
+      "test": 230
+    },
+    {
+      "code": "srp",
+      "name": "Serbian",
+      "family": "Indo-European",
+      "script": "Cyrillic",
+      "median_length": 300.0,
+      "train": 448,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "stq",
+      "name": "Saterfriesisch",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 269.0,
+      "train": 448,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "sun",
+      "name": "Sundanese",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 260.0,
+      "train": 331,
+      "val": 50,
+      "test": 385
+    },
+    {
+      "code": "swa",
+      "name": "Swahili (macrolanguage)",
+      "family": "Niger-Congo",
+      "script": "Latin",
+      "median_length": 267.5,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "swe",
+      "name": "Swedish",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 295.0,
+      "train": 442,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "szl",
+      "name": "Silesian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 234.0,
+      "train": 438,
+      "val": 50,
+      "test": 485
+    },
+    {
+      "code": "tam",
+      "name": "Tamil",
+      "family": "Dravidian",
+      "script": "Tamil",
+      "median_length": 311.0,
+      "train": 440,
+      "val": 50,
+      "test": 491
+    },
+    {
+      "code": "tat",
+      "name": "Tatar",
+      "family": "Turkic",
+      "script": "Cyrillic",
+      "median_length": 215.0,
+      "train": 359,
+      "val": 50,
+      "test": 432
+    },
+    {
+      "code": "tcy",
+      "name": "Tulu",
+      "family": "Dravidian",
+      "script": "Kannada",
+      "median_length": 319.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "tel",
+      "name": "Telugu",
+      "family": "Dravidian",
+      "script": "Telugu",
+      "median_length": 343.5,
+      "train": 378,
+      "val": 50,
+      "test": 448
+    },
+    {
+      "code": "tet",
+      "name": "Tetum",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 244.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "tgk",
+      "name": "Tajik",
+      "family": "Indo-European",
+      "script": "Cyrillic",
+      "median_length": 249.0,
+      "train": 445,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "tgl",
+      "name": "Tagalog",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 361.0,
+      "train": 438,
+      "val": 50,
+      "test": 493
+    },
+    {
+      "code": "tha",
+      "name": "Thai",
+      "family": "Tai-Kadai",
+      "script": "Thai",
+      "median_length": 313.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "ton",
+      "name": "Tongan",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 216.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "tsn",
+      "name": "Tswana",
+      "family": "Niger-Congo",
+      "script": "Latin",
+      "median_length": 436.5,
+      "train": 440,
+      "val": 50,
+      "test": 492
+    },
+    {
+      "code": "tuk",
+      "name": "Turkmen",
+      "family": "Turkic",
+      "script": "Latin",
+      "median_length": 385.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "tur",
+      "name": "Turkish",
+      "family": "Turkic",
+      "script": "Latin",
+      "median_length": 313.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "tyv",
+      "name": "Tuvan",
+      "family": "Turkic",
+      "script": "Cyrillic",
+      "median_length": 278.0,
+      "train": 445,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "udm",
+      "name": "Udmurt",
+      "family": "Uralic",
+      "script": "Cyrillic",
+      "median_length": 237.0,
+      "train": 450,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "uig",
+      "name": "Uighur",
+      "family": "Turkic",
+      "script": "Arabic",
+      "median_length": 374.0,
+      "train": 446,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "ukr",
+      "name": "Ukrainian",
+      "family": "Indo-European",
+      "script": "Cyrillic",
+      "median_length": 301.5,
+      "train": 444,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "urd",
+      "name": "Urdu",
+      "family": "Indo-European",
+      "script": "Arabic",
+      "median_length": 251.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "uzb",
+      "name": "Uzbek",
+      "family": "Turkic",
+      "script": "Latin",
+      "median_length": 351.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "vec",
+      "name": "Venetian",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 287.0,
+      "train": 445,
+      "val": 50,
+      "test": 496
+    },
+    {
+      "code": "vep",
+      "name": "Veps",
+      "family": "Uralic",
+      "script": "Latin",
+      "median_length": 212.0,
+      "train": 450,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "vie",
+      "name": "Vietnamese",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 269.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "vls",
+      "name": "Vlaams",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 268.5,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "vol",
+      "name": "Volapük",
+      "family": "Constructed",
+      "script": "Latin",
+      "median_length": 283.0,
+      "train": 353,
+      "val": 50,
+      "test": 398
+    },
+    {
+      "code": "vro",
+      "name": "Võro",
+      "family": "Uralic",
+      "script": "Latin",
+      "median_length": 244.5,
+      "train": 446,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "war",
+      "name": "Waray",
+      "family": "Austronesian",
+      "script": "Latin",
+      "median_length": 228.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "wln",
+      "name": "Walloon",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 205.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "wol",
+      "name": "Wolof",
+      "family": "Niger-Congo",
+      "script": "Latin",
+      "median_length": 333.0,
+      "train": 445,
+      "val": 50,
+      "test": 495
+    },
+    {
+      "code": "wuu",
+      "name": "Wu Chinese",
+      "family": "Sino-Tibetan",
+      "script": "CJK",
+      "median_length": 197.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "xho",
+      "name": "Xhosa",
+      "family": "Niger-Congo",
+      "script": "Latin",
+      "median_length": 362.0,
+      "train": 449,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "xmf",
+      "name": "Mingrelian",
+      "family": "Kartvelian",
+      "script": "Georgian",
+      "median_length": 264.5,
+      "train": 445,
+      "val": 50,
+      "test": 495
+    },
+    {
+      "code": "yid",
+      "name": "Yiddish",
+      "family": "Indo-European",
+      "script": "Hebrew",
+      "median_length": 260.0,
+      "train": 439,
+      "val": 50,
+      "test": 484
+    },
+    {
+      "code": "yor",
+      "name": "Yoruba",
+      "family": "Niger-Congo",
+      "script": "Latin",
+      "median_length": 246.0,
+      "train": 443,
+      "val": 50,
+      "test": 499
+    },
+    {
+      "code": "zea",
+      "name": "Zeeuws",
+      "family": "Indo-European",
+      "script": "Latin",
+      "median_length": 214.0,
+      "train": 447,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "zh-yue",
+      "name": "Cantonese",
+      "family": "Sino-Tibetan",
+      "script": "CJK",
+      "median_length": 187.0,
+      "train": 446,
+      "val": 50,
+      "test": 498
+    },
+    {
+      "code": "zho",
+      "name": "Standard Chinese",
+      "family": "Sino-Tibetan",
+      "script": "CJK",
+      "median_length": 213.0,
+      "train": 450,
+      "val": 50,
+      "test": 500
+    }
+  ],
+  "scripts": {
+    "Latin": 151,
+    "Cyrillic": 31,
+    "Arabic": 13,
+    "Devanagari": 8,
+    "CJK": 5,
+    "Bengali": 3,
+    "Hebrew": 2,
+    "Kannada": 2,
+    "Georgian": 2,
+    "Lao": 1,
+    "Telugu": 1,
+    "Tamil": 1,
+    "Sinhala": 1,
+    "Gurmukhi": 1,
+    "Oriya": 1,
+    "Myanmar": 1,
+    "Malayalam": 1,
+    "Khmer": 1,
+    "Hangul": 1,
+    "Tibetan": 1,
+    "Ethiopic": 1,
+    "Armenian": 1,
+    "Gujarati": 1,
+    "Greek": 1,
+    "Thaana": 1,
+    "Cherokee": 1,
+    "Thai": 1
+  },
+  "families": {
+    "Indo-European": 122,
+    "Austronesian": 22,
+    "Turkic": 17,
+    "Uralic": 14,
+    "Niger-Congo": 11,
+    "Sino-Tibetan": 10,
+    "Afro-Asiatic": 9,
+    "Constructed": 6,
+    "Dravidian": 5,
+    "Northeast Caucasian": 4,
+    "Mongolic": 2,
+    "Tai-Kadai": 2,
+    "Koreanic": 1,
+    "Quechuan": 1,
+    "Uto-Aztecan": 1,
+    "Dené-Yeniseian": 1,
+    "Language isolate": 1,
+    "South Caucasian": 1,
+    "Japonic": 1,
+    "Tupi-Guarani": 1,
+    "Iroquoian": 1,
+    "Aymaran": 1,
+    "Kartvelian": 1
+  },
+  "stage": "processed"
+}

@@ -1,0 +1,30 @@
+{
+  "seed": 42,
+  "val_per_lang": 50,
+  "val_max_fraction": 0.5,
+  "split_ids_sha256": "7a8656e07fd501f8e62b1d7d50f3506ff1302cc092ecc666ce1a4993d2845e7b",
+  "splits": {
+    "train": {
+      "file": "data/processed/train.csv",
+      "num_samples": 100724,
+      "num_languages": 235,
+      "sha256": "7be0be3beab2d802cfc4a344a4eaad4666065053beaacac69957d2c049847148"
+    },
+    "val": {
+      "file": "data/processed/val.csv",
+      "num_samples": 11725,
+      "num_languages": 235,
+      "sha256": "847758611a2aa82ea02c8f9bad8b2c838acad26064b7c2d321e6f1eea692044f"
+    },
+    "test": {
+      "file": "data/processed/test.csv",
+      "num_samples": 113283,
+      "num_languages": 235,
+      "sha256": "0706b72e7f4400add33852c4be70dc2fa64297b7d6c903561376ed2bd7a7dfbe"
+    }
+  },
+  "val_short_languages": {
+    "hat": 46,
+    "che": 29
+  }
+}

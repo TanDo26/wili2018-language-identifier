@@ -2,6 +2,14 @@
 models/*
 !models/.gitkeep
 
+# Dữ liệu – tạo lại bằng `python -m data.pipeline`
+# (data/splits/ và data/reports/ vẫn được commit để tái lập kết quả)
+data/raw/
+data/interim/
+data/processed/*
+!data/processed/stats.json
+!data/processed/labels.csv
+
 # Python
 __pycache__/
 *.pyc

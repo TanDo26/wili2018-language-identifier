@@ -33,7 +33,7 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             text TEXT NOT NULL,
             predicted_language TEXT NOT NULL,
-            correct_language TEXT NOT NULL,
+            correct_language TEXT,
             user_feedback TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -53,8 +53,9 @@ class MockModel:
 
     def predict(self, text: str) -> PredictResponse:
         text_lower = text.lower()
+        text_len = len(text)
         
-        # Giả lập logic dự đoán ngẫu nhiên dựa trên từ vựng
+        # Giả lập logic dự đoán
         if any(w in text_lower for w in ["the", "is", "and", "this"]):
             lang_code, lang_name = "eng", "English"
             confidence = 0.92
@@ -68,14 +69,17 @@ class MockModel:
             lang_code, lang_name = "unk", "Unknown / Ambiguous"
             confidence = 0.35
 
-        # Flag unsurity nếu confidence < 0.4
-        is_unsure = confidence < 0.4
+        # Cảnh báo nếu text ngắn dưới 140 ký tự hoặc confidence < 0.4
+        is_unsure = confidence < 0.4 or text_len < 140
         
-        explanation = (
-            ["Văn bản quá ngắn hoặc chứa từ vựng không thuộc n-gram đặc trưng của ngôn ngữ cụ thể (Unsure)"]
-            if is_unsure
-            else [f"Chứa các n-gram ký tự đặc trưng chuẩn của tiếng {lang_name}"]
-        )
+        explanations = []
+        if text_len < 140:
+            explanations.append("Warning: Text length is under 140 characters, prediction confidence may be lower than expected.")
+        
+        if confidence < 0.4:
+            explanations.append("Low confidence score: text contains ambiguous or insufficient n-gram features.")
+        else:
+            explanations.append(f"Contains strong characteristic n-gram features for {lang_name}.")
 
         top_candidates = [
             Candidate(code=lang_code, name=lang_name, confidence=confidence),
@@ -96,7 +100,7 @@ class MockModel:
             language_name=lang_name,
             confidence=confidence,
             is_unsure=is_unsure,
-            explanation=explanation,
+            explanation=explanations,
             top_candidates=top_candidates
         )
 
@@ -114,7 +118,7 @@ def health():
 
 @app.post("/api/v1/predict", response_model=PredictResponse, summary="Dự đoán ngôn ngữ cho 1 đoạn văn bản")
 def predict(payload: PredictRequest):
-    text_len = len(payload.text)
+    text_len = len(payload.text.strip())
     if text_len < 20:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -133,7 +137,8 @@ def predict(payload: PredictRequest):
 def predict_batch(payload: BatchPredictRequest):
     results = []
     for item in payload.texts:
-        if len(item) < 20 or len(item) > 5000:
+        item_len = len(item.strip())
+        if item_len < 20 or item_len > 5000:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Each text in batch must be between 20 and 5000 characters."

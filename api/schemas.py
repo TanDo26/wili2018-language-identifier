@@ -10,8 +10,6 @@ from pydantic import BaseModel, Field
 class PredictRequest(BaseModel):
     text: str = Field(
         ...,
-        min_length=20,
-        max_length=5000,
         description="Văn bản đầu vào (từ 20 đến 5000 ký tự)",
         example="This is a sample text to test language classification."
     )
@@ -29,12 +27,12 @@ class PredictResponse(BaseModel):
     confidence: float = Field(..., description="Độ tin cậy của class được chọn", example=0.95)
     is_unsure: bool = Field(
         ..., 
-        description="True nếu confidence < threshold (ví dụ < 0.4)", 
+        description="True nếu confidence < threshold hoặc text quá ngắn (< 140 ký tự)", 
         example=False
     )
     explanation: List[str] = Field(
         ..., 
-        description="Giải thích lý do mô hình phân loại (ví dụ các n-gram ký tự đặc trưng)",
+        description="Giải thích lý do mô hình phân loại và cảnh báo độ dài",
         example=["Contains common English trigrams: 'thi', 'his', 'sam'"]
     )
     top_candidates: List[Candidate] = Field(..., description="Danh sách các ngôn ngữ ứng viên top đầu")
@@ -63,8 +61,8 @@ class BatchPredictResponse(BaseModel):
 class ReportRequest(BaseModel):
     text: str = Field(..., description="Văn bản bị phân loại sai", example="Văn bản bị đoán sai")
     predicted_language: str = Field(..., description="Ngôn ngữ mô hình đã đoán", example="vie")
-    correct_language: str = Field(..., description="Ngôn ngữ đúng thực tế", example="eng")
-    user_feedback: Optional[str] = Field(None, description="Ghi chú thêm từ người dùng", example="Tiếng Anh pha tiếng Việt")
+    correct_language: Optional[str] = Field(None, description="Ngôn ngữ đúng (nếu người dùng biết)", example="eng")
+    user_feedback: Optional[str] = Field(None, description="Ghi chú thêm từ người dùng", example="Không chắc chắn ngôn ngữ")
 
 
 # ==========================================

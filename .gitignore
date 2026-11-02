@@ -10,6 +10,9 @@ data/processed/*
 !data/processed/stats.json
 !data/processed/labels.csv
 
+# Dự đoán chi tiết của experiments (nặng, tạo lại bằng feature_search --final)
+experiments/output/
+
 # Python
 __pycache__/
 *.pyc

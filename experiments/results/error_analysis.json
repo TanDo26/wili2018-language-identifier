@@ -1,0 +1,802 @@
+{
+  "n_test": 113283,
+  "runs": [
+    {
+      "name": "char_wb_1_4_100k__nb__nocrop",
+      "file": "experiments/output/predictions_char_wb_1_4_100k__nb__nocrop.csv",
+      "by_length": {
+        "20 ký tự": {
+          "n": 113283,
+          "accuracy": 0.827,
+          "macro_f1": 0.829
+        },
+        "30 ký tự": {
+          "n": 113283,
+          "accuracy": 0.8687,
+          "macro_f1": 0.8711
+        },
+        "50 ký tự": {
+          "n": 113283,
+          "accuracy": 0.9053,
+          "macro_f1": 0.9074
+        },
+        "100 ký tự": {
+          "n": 113283,
+          "accuracy": 0.9325,
+          "macro_f1": 0.9349
+        },
+        "140–199": {
+          "n": 31934,
+          "accuracy": 0.9302,
+          "macro_f1": 0.9309
+        },
+        "200–499": {
+          "n": 59436,
+          "accuracy": 0.9559,
+          "macro_f1": 0.9546
+        },
+        "500–999": {
+          "n": 18011,
+          "accuracy": 0.9555,
+          "macro_f1": 0.9399
+        },
+        "1000+": {
+          "n": 3902,
+          "accuracy": 0.9503,
+          "macro_f1": 0.9139
+        },
+        "Toàn bộ test": {
+          "n": 113283,
+          "accuracy": 0.9484,
+          "macro_f1": 0.9503
+        }
+      },
+      "pairs": {
+        "full": [
+          {
+            "a": "cbk",
+            "b": "spa",
+            "a_name": "Chavacano",
+            "b_name": "Spanish",
+            "a_to_b": 198,
+            "b_to_a": 2,
+            "errors": 200,
+            "rate": 0.2002,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "kok",
+            "b": "mar",
+            "a_name": "Konkani",
+            "b_name": "Marathi",
+            "a_to_b": 156,
+            "b_to_a": 2,
+            "errors": 158,
+            "rate": 0.1586,
+            "same_family": true,
+            "same_script": false
+          },
+          {
+            "a": "hbs",
+            "b": "hrv",
+            "a_name": "Serbo-Croatian",
+            "b_name": "Croatian",
+            "a_to_b": 76,
+            "b_to_a": 65,
+            "errors": 141,
+            "rate": 0.1421,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "bos",
+            "b": "hbs",
+            "a_name": "Bosnian",
+            "b_name": "Serbo-Croatian",
+            "a_to_b": 87,
+            "b_to_a": 48,
+            "errors": 135,
+            "rate": 0.1354,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "deu",
+            "b": "pam",
+            "a_name": "German",
+            "b_name": "Pampanga",
+            "a_to_b": 0,
+            "b_to_a": 129,
+            "errors": 129,
+            "rate": 0.1581,
+            "same_family": false,
+            "same_script": true
+          },
+          {
+            "a": "bos",
+            "b": "hrv",
+            "a_name": "Bosnian",
+            "b_name": "Croatian",
+            "a_to_b": 88,
+            "b_to_a": 39,
+            "errors": 127,
+            "rate": 0.1279,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "dty",
+            "b": "nep",
+            "a_name": "Doteli",
+            "b_name": "Nepali (macrolanguage)",
+            "a_to_b": 73,
+            "b_to_a": 38,
+            "errors": 111,
+            "rate": 0.1133,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "cbk",
+            "b": "eng",
+            "a_name": "Chavacano",
+            "b_name": "English",
+            "a_to_b": 108,
+            "b_to_a": 0,
+            "errors": 108,
+            "rate": 0.108,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "fra",
+            "b": "oci",
+            "a_name": "French",
+            "b_name": "Occitan",
+            "a_to_b": 1,
+            "b_to_a": 75,
+            "errors": 76,
+            "rate": 0.0764,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "myv",
+            "b": "rus",
+            "a_name": "Erzya",
+            "b_name": "Russian",
+            "a_to_b": 73,
+            "b_to_a": 1,
+            "errors": 74,
+            "rate": 0.0742,
+            "same_family": false,
+            "same_script": true
+          },
+          {
+            "a": "eng",
+            "b": "ibo",
+            "a_name": "English",
+            "b_name": "Igbo",
+            "a_to_b": 0,
+            "b_to_a": 67,
+            "errors": 67,
+            "rate": 0.067,
+            "same_family": false,
+            "same_script": true
+          },
+          {
+            "a": "wuu",
+            "b": "zho",
+            "a_name": "Wu Chinese",
+            "b_name": "Standard Chinese",
+            "a_to_b": 39,
+            "b_to_a": 26,
+            "errors": 65,
+            "rate": 0.065,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "ind",
+            "b": "map-bms",
+            "a_name": "Indonesian",
+            "b_name": "Banyumasan",
+            "a_to_b": 13,
+            "b_to_a": 50,
+            "errors": 63,
+            "rate": 0.0639,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "nci",
+            "b": "spa",
+            "a_name": "Classical Nahuatl",
+            "b_name": "Spanish",
+            "a_to_b": 62,
+            "b_to_a": 0,
+            "errors": 62,
+            "rate": 0.0623,
+            "same_family": false,
+            "same_script": true
+          },
+          {
+            "a": "ava",
+            "b": "eng",
+            "a_name": "Avar",
+            "b_name": "English",
+            "a_to_b": 59,
+            "b_to_a": 0,
+            "errors": 59,
+            "rate": 0.0644,
+            "same_family": false,
+            "same_script": false
+          }
+        ],
+        "20": [
+          {
+            "a": "be-tarask",
+            "b": "bel",
+            "a_name": "Belarusian (Taraschkewiza)",
+            "b_name": "Belarusian",
+            "a_to_b": 105,
+            "b_to_a": 125,
+            "errors": 230,
+            "rate": 0.2316,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "dty",
+            "b": "nep",
+            "a_name": "Doteli",
+            "b_name": "Nepali (macrolanguage)",
+            "a_to_b": 123,
+            "b_to_a": 99,
+            "errors": 222,
+            "rate": 0.2265,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "bos",
+            "b": "hrv",
+            "a_name": "Bosnian",
+            "b_name": "Croatian",
+            "a_to_b": 113,
+            "b_to_a": 102,
+            "errors": 215,
+            "rate": 0.2165,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "bos",
+            "b": "hbs",
+            "a_name": "Bosnian",
+            "b_name": "Serbo-Croatian",
+            "a_to_b": 101,
+            "b_to_a": 100,
+            "errors": 201,
+            "rate": 0.2016,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "hbs",
+            "b": "hrv",
+            "a_name": "Serbo-Croatian",
+            "b_name": "Croatian",
+            "a_to_b": 104,
+            "b_to_a": 87,
+            "errors": 191,
+            "rate": 0.1925,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "ind",
+            "b": "msa",
+            "a_name": "Indonesian",
+            "b_name": "Malay",
+            "a_to_b": 90,
+            "b_to_a": 69,
+            "errors": 159,
+            "rate": 0.1613,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "ara",
+            "b": "arz",
+            "a_name": "Arabic",
+            "b_name": "Egyptian Arabic",
+            "a_to_b": 69,
+            "b_to_a": 85,
+            "errors": 154,
+            "rate": 0.1545,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "cbk",
+            "b": "spa",
+            "a_name": "Chavacano",
+            "b_name": "Spanish",
+            "a_to_b": 110,
+            "b_to_a": 29,
+            "errors": 139,
+            "rate": 0.1391,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "kok",
+            "b": "mar",
+            "a_name": "Konkani",
+            "b_name": "Marathi",
+            "a_to_b": 132,
+            "b_to_a": 1,
+            "errors": 133,
+            "rate": 0.1335,
+            "same_family": true,
+            "same_script": false
+          },
+          {
+            "a": "wuu",
+            "b": "zho",
+            "a_name": "Wu Chinese",
+            "b_name": "Standard Chinese",
+            "a_to_b": 77,
+            "b_to_a": 49,
+            "errors": 126,
+            "rate": 0.126,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "ind",
+            "b": "map-bms",
+            "a_name": "Indonesian",
+            "b_name": "Banyumasan",
+            "a_to_b": 64,
+            "b_to_a": 60,
+            "errors": 124,
+            "rate": 0.1258,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "nno",
+            "b": "nob",
+            "a_name": "Norwegian Nynorsk",
+            "b_name": "Bokmål",
+            "a_to_b": 77,
+            "b_to_a": 46,
+            "errors": 123,
+            "rate": 0.1231,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "koi",
+            "b": "kom",
+            "a_name": "Komi-Permyak",
+            "b_name": "Komi",
+            "a_to_b": 59,
+            "b_to_a": 49,
+            "errors": 108,
+            "rate": 0.111,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "dan",
+            "b": "nob",
+            "a_name": "Danish",
+            "b_name": "Bokmål",
+            "a_to_b": 44,
+            "b_to_a": 57,
+            "errors": 101,
+            "rate": 0.101,
+            "same_family": true,
+            "same_script": true
+          },
+          {
+            "a": "eng",
+            "b": "sco",
+            "a_name": "English",
+            "b_name": "Scots",
+            "a_to_b": 26,
+            "b_to_a": 74,
+            "errors": 100,
+            "rate": 0.1001,
+            "same_family": true,
+            "same_script": true
+          }
+        ]
+      },
+      "worst": {
+        "full": [
+          {
+            "code": "eng",
+            "name": "English",
+            "f1": 0.3833,
+            "n": 500,
+            "most_confused_with": "sco",
+            "most_confused_name": "Scots"
+          },
+          {
+            "code": "che",
+            "name": "Chechen",
+            "f1": 0.4828,
+            "n": 66,
+            "most_confused_with": "lez",
+            "most_confused_name": "Lezghian"
+          },
+          {
+            "code": "cbk",
+            "name": "Chavacano",
+            "f1": 0.5242,
+            "n": 500,
+            "most_confused_with": "spa",
+            "most_confused_name": "Spanish"
+          },
+          {
+            "code": "pam",
+            "name": "Pampanga",
+            "f1": 0.6887,
+            "n": 316,
+            "most_confused_with": "deu",
+            "most_confused_name": "German"
+          },
+          {
+            "code": "hbs",
+            "name": "Serbo-Croatian",
+            "f1": 0.6913,
+            "n": 498,
+            "most_confused_with": "hrv",
+            "most_confused_name": "Croatian"
+          },
+          {
+            "code": "deu",
+            "name": "German",
+            "f1": 0.6988,
+            "n": 500,
+            "most_confused_with": "fra",
+            "most_confused_name": "French"
+          },
+          {
+            "code": "bos",
+            "name": "Bosnian",
+            "f1": 0.7002,
+            "n": 499,
+            "most_confused_with": "hrv",
+            "most_confused_name": "Croatian"
+          },
+          {
+            "code": "spa",
+            "name": "Spanish",
+            "f1": 0.7267,
+            "n": 499,
+            "most_confused_with": "eng",
+            "most_confused_name": "English"
+          },
+          {
+            "code": "kok",
+            "name": "Konkani",
+            "f1": 0.7298,
+            "n": 497,
+            "most_confused_with": "mar",
+            "most_confused_name": "Marathi"
+          },
+          {
+            "code": "hrv",
+            "name": "Croatian",
+            "f1": 0.7324,
+            "n": 494,
+            "most_confused_with": "hbs",
+            "most_confused_name": "Serbo-Croatian"
+          }
+        ],
+        "20": [
+          {
+            "code": "eng",
+            "name": "English",
+            "f1": 0.315,
+            "n": 500,
+            "most_confused_with": "sco",
+            "most_confused_name": "Scots"
+          },
+          {
+            "code": "che",
+            "name": "Chechen",
+            "f1": 0.35,
+            "n": 66,
+            "most_confused_with": "lez",
+            "most_confused_name": "Lezghian"
+          },
+          {
+            "code": "pam",
+            "name": "Pampanga",
+            "f1": 0.4238,
+            "n": 316,
+            "most_confused_with": "deu",
+            "most_confused_name": "German"
+          },
+          {
+            "code": "cbk",
+            "name": "Chavacano",
+            "f1": 0.4317,
+            "n": 500,
+            "most_confused_with": "spa",
+            "most_confused_name": "Spanish"
+          },
+          {
+            "code": "bos",
+            "name": "Bosnian",
+            "f1": 0.4619,
+            "n": 499,
+            "most_confused_with": "hrv",
+            "most_confused_name": "Croatian"
+          },
+          {
+            "code": "hbs",
+            "name": "Serbo-Croatian",
+            "f1": 0.471,
+            "n": 498,
+            "most_confused_with": "hrv",
+            "most_confused_name": "Croatian"
+          },
+          {
+            "code": "spa",
+            "name": "Spanish",
+            "f1": 0.4779,
+            "n": 499,
+            "most_confused_with": "cbk",
+            "most_confused_name": "Chavacano"
+          },
+          {
+            "code": "hrv",
+            "name": "Croatian",
+            "f1": 0.4793,
+            "n": 494,
+            "most_confused_with": "bos",
+            "most_confused_name": "Bosnian"
+          },
+          {
+            "code": "ind",
+            "name": "Indonesian",
+            "f1": 0.5011,
+            "n": 489,
+            "most_confused_with": "msa",
+            "most_confused_name": "Malay"
+          },
+          {
+            "code": "map-bms",
+            "name": "Banyumasan",
+            "f1": 0.5252,
+            "n": 497,
+            "most_confused_with": "ind",
+            "most_confused_name": "Indonesian"
+          }
+        ]
+      },
+      "confidence": {
+        "20 ký tự": {
+          "0.4": {
+            "coverage": 0.922,
+            "accuracy_kept": 0.8759,
+            "accuracy_unsure": 0.2477
+          },
+          "0.6": {
+            "coverage": 0.8188,
+            "accuracy_kept": 0.926,
+            "accuracy_unsure": 0.3794
+          },
+          "0.8": {
+            "coverage": 0.7135,
+            "accuracy_kept": 0.9624,
+            "accuracy_unsure": 0.4896
+          },
+          "0.9": {
+            "coverage": 0.6433,
+            "accuracy_kept": 0.9767,
+            "accuracy_unsure": 0.5568
+          }
+        },
+        "30 ký tự": {
+          "0.4": {
+            "coverage": 0.9567,
+            "accuracy_kept": 0.8972,
+            "accuracy_unsure": 0.2388
+          },
+          "0.6": {
+            "coverage": 0.8791,
+            "accuracy_kept": 0.9354,
+            "accuracy_unsure": 0.3845
+          },
+          "0.8": {
+            "coverage": 0.7917,
+            "accuracy_kept": 0.964,
+            "accuracy_unsure": 0.5067
+          },
+          "0.9": {
+            "coverage": 0.7286,
+            "accuracy_kept": 0.9763,
+            "accuracy_unsure": 0.5801
+          }
+        },
+        "50 ký tự": {
+          "0.4": {
+            "coverage": 0.9803,
+            "accuracy_kept": 0.9188,
+            "accuracy_unsure": 0.2305
+          },
+          "0.6": {
+            "coverage": 0.929,
+            "accuracy_kept": 0.9448,
+            "accuracy_unsure": 0.3879
+          },
+          "0.8": {
+            "coverage": 0.8655,
+            "accuracy_kept": 0.9652,
+            "accuracy_unsure": 0.5194
+          },
+          "0.9": {
+            "coverage": 0.8167,
+            "accuracy_kept": 0.9743,
+            "accuracy_unsure": 0.5976
+          }
+        },
+        "100 ký tự": {
+          "0.4": {
+            "coverage": 0.9939,
+            "accuracy_kept": 0.9367,
+            "accuracy_unsure": 0.2435
+          },
+          "0.6": {
+            "coverage": 0.9668,
+            "accuracy_kept": 0.9508,
+            "accuracy_unsure": 0.3979
+          },
+          "0.8": {
+            "coverage": 0.928,
+            "accuracy_kept": 0.9644,
+            "accuracy_unsure": 0.5209
+          },
+          "0.9": {
+            "coverage": 0.8962,
+            "accuracy_kept": 0.9717,
+            "accuracy_unsure": 0.5938
+          }
+        },
+        "Toàn bộ test": {
+          "0.4": {
+            "coverage": 0.9981,
+            "accuracy_kept": 0.9498,
+            "accuracy_unsure": 0.2085
+          },
+          "0.6": {
+            "coverage": 0.9847,
+            "accuracy_kept": 0.957,
+            "accuracy_unsure": 0.3941
+          },
+          "0.8": {
+            "coverage": 0.9633,
+            "accuracy_kept": 0.9651,
+            "accuracy_unsure": 0.5091
+          },
+          "0.9": {
+            "coverage": 0.9451,
+            "accuracy_kept": 0.9699,
+            "accuracy_unsure": 0.5792
+          }
+        }
+      }
+    },
+    {
+      "name": "char_wb_1_4_100k__sgd__crop",
+      "file": "experiments/output/predictions_char_wb_1_4_100k__sgd__crop.csv",
+      "by_length": {
+        "20 ký tự": {
+          "n": 113283,
+          "accuracy": 0.7648,
+          "macro_f1": 0.7681
+        },
+        "30 ký tự": {
+          "n": 113283,
+          "accuracy": 0.8386,
+          "macro_f1": 0.8398
+        },
+        "50 ký tự": {
+          "n": 113283,
+          "accuracy": 0.9009,
+          "macro_f1": 0.9012
+        },
+        "100 ký tự": {
+          "n": 113283,
+          "accuracy": 0.9428,
+          "macro_f1": 0.9431
+        },
+        "140–199": {
+          "n": 31934,
+          "accuracy": 0.9498,
+          "macro_f1": 0.9443
+        },
+        "200–499": {
+          "n": 59436,
+          "accuracy": 0.9716,
+          "macro_f1": 0.9703
+        },
+        "500–999": {
+          "n": 18011,
+          "accuracy": 0.9773,
+          "macro_f1": 0.9739
+        },
+        "1000+": {
+          "n": 3902,
+          "accuracy": 0.9795,
+          "macro_f1": 0.966
+        },
+        "Toàn bộ test": {
+          "n": 113283,
+          "accuracy": 0.9666,
+          "macro_f1": 0.9665
+        }
+      }
+    },
+    {
+      "name": "char_wb_1_4_100k__sgd__nocrop",
+      "file": "experiments/output/predictions_char_wb_1_4_100k__sgd__nocrop.csv",
+      "by_length": {
+        "20 ký tự": {
+          "n": 113283,
+          "accuracy": 0.5446,
+          "macro_f1": 0.6257
+        },
+        "30 ký tự": {
+          "n": 113283,
+          "accuracy": 0.6784,
+          "macro_f1": 0.7388
+        },
+        "50 ký tự": {
+          "n": 113283,
+          "accuracy": 0.8201,
+          "macro_f1": 0.847
+        },
+        "100 ký tự": {
+          "n": 113283,
+          "accuracy": 0.9221,
+          "macro_f1": 0.9249
+        },
+        "140–199": {
+          "n": 31934,
+          "accuracy": 0.9466,
+          "macro_f1": 0.9409
+        },
+        "200–499": {
+          "n": 59436,
+          "accuracy": 0.9709,
+          "macro_f1": 0.9699
+        },
+        "500–999": {
+          "n": 18011,
+          "accuracy": 0.9787,
+          "macro_f1": 0.9772
+        },
+        "1000+": {
+          "n": 3902,
+          "accuracy": 0.9798,
+          "macro_f1": 0.9753
+        },
+        "Toàn bộ test": {
+          "n": 113283,
+          "accuracy": 0.9656,
+          "macro_f1": 0.9657
+        }
+      }
+    }
+  ]
+}

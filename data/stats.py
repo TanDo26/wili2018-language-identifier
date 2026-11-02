@@ -22,6 +22,9 @@ from data.common import (
     SPLIT_IDS_PATH,
     SPLITS,
     STATS_PATH,
+    TEST_SHORT_PATH,
+    TRAIN_CROPS_PATH,
+    VAL_SHORT_PATH,
     file_hash,
     length_stats,
     load_split,
@@ -33,7 +36,18 @@ from data.common import (
 )
 from data.download import DOI, EXPECTED_MD5, LICENSE, RECORD_URL
 
-SCHEMA_VERSION = "1.0"
+SCHEMA_VERSION = "1.1"
+
+
+def augmentation_info(processed_dir: Path = PROCESSED_DIR) -> dict:
+    """Các file do data/augment.py tạo (bỏ qua file chưa có)."""
+    info = {}
+    for path in (TRAIN_CROPS_PATH, VAL_SHORT_PATH, TEST_SHORT_PATH):
+        path = processed_dir / path.name
+        if path.exists():
+            info[path.stem] = {"file": rel(path), "sha256": file_hash(path),
+                               "num_samples": len(read_split(path))}
+    return info
 
 
 def build_stats(frames: dict[str, pd.DataFrame], labels: pd.DataFrame, clean_report: dict,
@@ -75,6 +89,7 @@ def build_stats(frames: dict[str, pd.DataFrame], labels: pd.DataFrame, clean_rep
         },
         "num_languages": len(codes),
         "splits": splits,
+        "augmentation": augmentation_info(processed_dir),
         "cleaning": clean_report,
         "leakage": {
             "passed": leakage_report["passed"],

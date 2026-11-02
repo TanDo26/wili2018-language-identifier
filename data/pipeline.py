@@ -1,4 +1,4 @@
-"""Chạy toàn bộ pipeline dữ liệu: tải -> làm sạch -> chia -> kiểm tra rò rỉ -> thống kê.
+"""Chạy toàn bộ pipeline dữ liệu: tải -> làm sạch -> chia -> kiểm tra rò rỉ -> cắt ngắn -> thống kê.
 
     python -m data.pipeline               # dùng lại data/splits/split_ids.csv đã commit
     python -m data.pipeline --eda         # chạy thêm EDA cho dữ liệu thô và dữ liệu đã chia
@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import argparse
 
-from data import check_leakage, clean, download, eda, split, stats
+from data import augment, check_leakage, clean, download, eda, split, stats
 from data.common import setup_console
 
 
@@ -26,6 +26,7 @@ def main(argv=None):
         ("clean", clean.main, []),
         ("split", split.main, ["--regenerate"] if args.regenerate else []),
         ("check_leakage", check_leakage.main, []),
+        ("augment", augment.main, []),
         ("stats", stats.main, []),
     ]
     if args.eda:

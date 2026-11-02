@@ -26,8 +26,16 @@ CLEAN_REPORT_PATH = INTERIM_DIR / "clean_report.json"
 LEAKAGE_REPORT_PATH = PROCESSED_DIR / "leakage_report.json"
 LABELS_PATH = PROCESSED_DIR / "labels.csv"
 STATS_PATH = PROCESSED_DIR / "stats.json"
+TRAIN_CROPS_PATH = PROCESSED_DIR / "train_crops.csv"
+VAL_SHORT_PATH = PROCESSED_DIR / "val_short.csv"
+TEST_SHORT_PATH = PROCESSED_DIR / "test_short.csv"
+FEEDBACK_TRAIN_PATH = PROCESSED_DIR / "train_feedback.csv"
 
 SEED = 42
+# API nhận văn bản từ 20 ký tự, nhưng WiLI không có đoạn nào ngắn hơn 140 ký tự,
+# nên có thêm các tập đánh giá cắt ngắn ở những độ dài này (data/augment.py).
+MIN_TEXT_LEN = 20
+SHORT_LENGTHS = (20, 30, 50, 100)
 VAL_PER_LANG = 50
 # Ngôn ngữ có ít mẫu (vd. che chỉ còn ~60 đoạn sau khử trùng lặp) thì val lấy tối đa
 # một nửa, để train vẫn còn dữ liệu.

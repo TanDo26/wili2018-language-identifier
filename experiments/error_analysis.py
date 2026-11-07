@@ -7,6 +7,7 @@ File dự đoán (do `feature_search --final` tạo, hoặc evaluate.py của B 
 
 File đầu tiên là cấu hình chính: phân tích cặp nhầm, ngôn ngữ yếu và ngưỡng độ tin cậy.
 Các file sau chỉ được vẽ thêm vào đường độ chính xác theo độ dài để so sánh.
+Mọi file đều được tách điểm theo phần văn bản chung với train (data/check_leakage.py).
 Kết quả: experiments/results/error_analysis.md, .json và figures/error_*.png.
 """
 from __future__ import annotations
@@ -18,7 +19,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score
 
-from data.common import LABELS_PATH, REPORTS_DIR, read_json, read_split, rel, setup_console, write_json
+from data.common import LABELS_PATH, OVERLAP_PATH, REPORTS_DIR, read_json, read_split, rel, setup_console, write_json
 
 from experiments.feature_search import RESULTS_DIR
 
@@ -47,15 +48,35 @@ def length_groups(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
     return {name: g for name, g in groups.items() if not g.empty}
 
 
+def _scores(g: pd.DataFrame) -> dict:
+    return {
+        "n": len(g),
+        "accuracy": round(float(accuracy_score(g["label"], g["pred"])), 4),
+        "macro_f1": round(float(f1_score(g["label"], g["pred"], average="macro")), 4),
+    }
+
+
 def by_length(df: pd.DataFrame) -> dict:
-    out = {}
-    for name, g in length_groups(df).items():
-        out[name] = {
-            "n": len(g),
-            "accuracy": round(float(accuracy_score(g["label"], g["pred"])), 4),
-            "macro_f1": round(float(f1_score(g["label"], g["pred"], average="macro")), 4),
-        }
-    return out
+    return {name: _scores(g) for name, g in length_groups(df).items()}
+
+
+def by_overlap(df: pd.DataFrame, shared: pd.Series) -> dict:
+    """Điểm trên các đoạn test đầy đủ, tách theo tỉ lệ văn bản chung với train (id -> tỉ lệ)."""
+    full = df[df["bucket"] == "full"]
+    fraction = full["id"].map(shared).fillna(0.0)
+    groups = {"Toàn bộ test": full,
+              "Không có văn bản chung với train": full[fraction == 0],
+              "Chung từ 50% độ dài trở lên": full[fraction >= 0.5]}
+    return {name: _scores(g) for name, g in groups.items() if not g.empty}
+
+
+def load_shared_fraction() -> pd.Series | None:
+    if not OVERLAP_PATH.exists():
+        print(f"Chưa có {rel(OVERLAP_PATH)} – bỏ qua phần tách điểm theo văn bản chung.")
+        return None
+    rows = read_split(OVERLAP_PATH)
+    rows = rows[rows["split"] == "test"]
+    return rows.set_index("id")["shared_fraction"].astype(float)
 
 
 def confused_pairs(df: pd.DataFrame, info: pd.DataFrame, top: int = TOP_PAIRS) -> list[dict]:
@@ -153,6 +174,19 @@ def to_markdown(report: dict, figures: list[Path]) -> str:
                            for r in report["runs"])
         lines.append(f"| {group} | {stats['n']:,} | {cells} |")
     lines += ["", "Mỗi ô: accuracy / macro-F1."]
+
+    if "by_overlap" in main:
+        lines += ["", "## Ảnh hưởng của văn bản chung với train", "",
+                  "Điểm trên đoạn test đầy đủ, tách theo phần văn bản chung với train (bài do bot tạo theo mẫu, "
+                  "chỉ khác tên riêng – xem `data/check_leakage.py`).", "",
+                  "| Nhóm | Số đoạn | " + " | ".join(pretty_name(r["name"]) for r in report["runs"]) + " |",
+                  "|---|---:|" + "---:|" * len(report["runs"])]
+        for group, stats in main["by_overlap"].items():
+            cells = " | ".join(f"{r['by_overlap'][group]['accuracy']:.2%} / {r['by_overlap'][group]['macro_f1']:.2%}"
+                               for r in report["runs"])
+            lines.append(f"| {group} | {stats['n']:,} | {cells} |")
+        lines += ["", "Mỗi ô: accuracy / macro-F1. Các nhóm có tỉ lệ ngôn ngữ khác nhau, nên chênh lệch giữa "
+                      "các dòng không hoàn toàn do rò rỉ."]
 
     for bucket, title in (("full", "đoạn đầy đủ"), ("20", "đoạn 20 ký tự")):
         lines += ["", f"## Cặp ngôn ngữ hay bị nhầm – {title}", "",
@@ -266,11 +300,14 @@ def main(argv=None):
     args = parser.parse_args(argv)
 
     info = load_info()
+    shared = load_shared_fraction()
     runs = []
     for i, path in enumerate(args.predictions):
         df = read_split(path)
         df["n_chars"] = df["n_chars"].astype(int)
         run = {"name": run_name(path), "file": rel(path), "by_length": by_length(df)}
+        if shared is not None:
+            run["by_overlap"] = by_overlap(df, shared)
         if i == 0:
             n_test = int((df["bucket"] == "full").sum())
             run["pairs"] = {b: confused_pairs(df[df["bucket"] == b], info) for b in PAIR_BUCKETS}
@@ -284,7 +321,7 @@ def main(argv=None):
     figures = plot(report, args.out_dir / "figures")
     write_json(report, args.out_dir / "error_analysis.json")
     md = args.out_dir / "error_analysis.md"
-    md.write_text(to_markdown(report, figures), encoding="utf-8")
+    md.write_text(to_markdown(report, figures), encoding="utf-8", newline="\n")
     print(f"Đã ghi {rel(md)}, error_analysis.json và {len(figures)} hình.")
 
 

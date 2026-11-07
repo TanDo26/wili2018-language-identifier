@@ -32,6 +32,7 @@ from data.common import (
     read_split,
     rel,
     setup_console,
+    text_hash,
     write_json,
     write_split,
 )
@@ -116,7 +117,7 @@ def main(argv=None):
         "seed": args.seed,
         "val_per_lang": args.val_per_lang,
         "val_max_fraction": VAL_MAX_FRACTION,
-        "split_ids_sha256": file_hash(args.split_ids),
+        "split_ids_sha256": text_hash(args.split_ids),
         "splits": {},
     }
     for name, df in frames.items():

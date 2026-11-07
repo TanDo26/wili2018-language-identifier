@@ -2,7 +2,7 @@
 
     python -m data.feedback path/to/accepted_reports.csv
 
-File đầu vào (C xuất từ API các báo cáo có status=accepted), CSV UTF-8 với các cột:
+File đầu vào (tạo bằng `python -m data.export_reports`), CSV UTF-8 với các cột:
     text       văn bản người dùng đã nhập
     label      verified_language do Data Scientist gán (một trong 235 nhãn WiLI)
     report_id  (tùy chọn)

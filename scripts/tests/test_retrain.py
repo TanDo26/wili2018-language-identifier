@@ -33,6 +33,17 @@ def test_retrain_creates_successive_versions_with_meta(tmp_path):
     assert not list(tmp_path.glob(".*.tmp"))
 
 
+def test_algorithm_reaches_train_and_meta(tmp_path):
+    default = main([*FAKE, "--models-dir", str(tmp_path)])
+    chosen = main([*FAKE, "--models-dir", str(tmp_path), "--algorithm", "svm"])
+
+    for version, name in ((default, "naive_bayes"), (chosen, "svm")):
+        assert json.loads((version / "meta.json").read_text(encoding="utf-8"))["algorithm"] == name
+        assert json.loads((version / "train_args.json").read_text(encoding="utf-8"))["algorithm"] == name
+    with pytest.raises(SystemExit):
+        main([*FAKE, "--models-dir", str(tmp_path), "--algorithm", "no_such_model"])
+
+
 def test_failed_train_leaves_no_version(tmp_path):
     # ml.train hiện vẫn là stub của B (raise NotImplementedError)
     with pytest.raises(SystemExit) as exc:

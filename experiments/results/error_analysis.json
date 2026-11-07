@@ -51,6 +51,23 @@
           "macro_f1": 0.9503
         }
       },
+      "by_overlap": {
+        "Toàn bộ test": {
+          "n": 113283,
+          "accuracy": 0.9484,
+          "macro_f1": 0.9503
+        },
+        "Không có văn bản chung với train": {
+          "n": 98514,
+          "accuracy": 0.9441,
+          "macro_f1": 0.9365
+        },
+        "Chung từ 50% độ dài trở lên": {
+          "n": 6904,
+          "accuracy": 0.9826,
+          "macro_f1": 0.9003
+        }
+      },
       "pairs": {
         "full": [
           {
@@ -745,6 +762,23 @@
           "accuracy": 0.9666,
           "macro_f1": 0.9665
         }
+      },
+      "by_overlap": {
+        "Toàn bộ test": {
+          "n": 113283,
+          "accuracy": 0.9666,
+          "macro_f1": 0.9665
+        },
+        "Không có văn bản chung với train": {
+          "n": 98514,
+          "accuracy": 0.9629,
+          "macro_f1": 0.9606
+        },
+        "Chung từ 50% độ dài trở lên": {
+          "n": 6904,
+          "accuracy": 0.9936,
+          "macro_f1": 0.9543
+        }
       }
     },
     {
@@ -795,6 +829,23 @@
           "n": 113283,
           "accuracy": 0.9656,
           "macro_f1": 0.9657
+        }
+      },
+      "by_overlap": {
+        "Toàn bộ test": {
+          "n": 113283,
+          "accuracy": 0.9656,
+          "macro_f1": 0.9657
+        },
+        "Không có văn bản chung với train": {
+          "n": 98514,
+          "accuracy": 0.9614,
+          "macro_f1": 0.9588
+        },
+        "Chung từ 50% độ dài trở lên": {
+          "n": 6904,
+          "accuracy": 0.9939,
+          "macro_f1": 0.9568
         }
       }
     }

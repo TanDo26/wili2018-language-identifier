@@ -15,7 +15,8 @@ eda:
 experiments:
 	$(PYTHON) -m experiments.feature_search $(ARGS)
 
-# make retrain ARGS="--feedback exports/accepted_reports.csv"
+# make retrain ARGS="--algorithm svm"
+# make retrain ARGS="--feedback exports/accepted_reports.csv"  (file tạo bằng python -m data.export_reports)
 retrain:
 	$(PYTHON) -m scripts.retrain $(ARGS)
 

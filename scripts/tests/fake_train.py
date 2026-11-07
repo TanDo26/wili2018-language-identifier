@@ -9,6 +9,7 @@ def main():
     parser.add_argument("--data-dir", required=True)
     parser.add_argument("--out-dir", required=True)
     parser.add_argument("--features", required=True)
+    parser.add_argument("--algorithm", required=True)
     parser.add_argument("--augment", action="store_true")
     parser.add_argument("--feedback", action="store_true")
     args = parser.parse_args()

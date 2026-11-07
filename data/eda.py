@@ -306,7 +306,7 @@ def main(argv=None):
 
     write_json(report, args.out_dir / f"eda_{args.stage}.json")
     md_path = args.out_dir / f"eda_{args.stage}.md"
-    md_path.write_text(to_markdown(report, args.stage, figures), encoding="utf-8")
+    md_path.write_text(to_markdown(report, args.stage, figures), encoding="utf-8", newline="\n")
     print(f"Đã ghi {rel(md_path)}, {rel(args.out_dir / f'eda_{args.stage}.json')} và {len(figures)} hình.")
 
 

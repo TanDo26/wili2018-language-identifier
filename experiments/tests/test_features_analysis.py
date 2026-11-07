@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from experiments.error_analysis import by_length, confidence_table, confused_pairs, worst_languages
+from experiments.error_analysis import by_length, by_overlap, confidence_table, confused_pairs, worst_languages
 from ml.features import DEFAULT_PRESET, FEATURE_PRESETS, build_vectorizer
 
 
@@ -53,6 +53,23 @@ def test_by_length_groups_short_and_natural_lengths():
     assert out["200–499"]["n"] == 10 and out["500–999"]["n"] == 10 and out["1000+"]["n"] == 10
     assert out["Toàn bộ test"]["accuracy"] == round(25 / 30, 4)
     assert "30 ký tự" not in out and "140–199" not in out  # nhóm rỗng bị bỏ qua
+
+
+def test_by_overlap_scores_full_texts_by_shared_fraction():
+    df = pd.DataFrame({
+        "id": ["te_0", "te_1", "te_2", "te_3", "te_0_20"],
+        "bucket": ["full", "full", "full", "full", "20"],
+        "label": ["eng", "eng", "eng", "eng", "eng"],
+        "pred": ["eng", "deu", "eng", "eng", "deu"],
+    })
+    shared = pd.Series({"te_2": 0.3, "te_3": 0.9, "te_0_20": 0.9})
+
+    out = by_overlap(df, shared)
+
+    assert out["Toàn bộ test"]["n"] == 4 and out["Toàn bộ test"]["accuracy"] == 0.75
+    assert out["Không có văn bản chung với train"]["n"] == 2
+    assert out["Không có văn bản chung với train"]["accuracy"] == 0.5
+    assert out["Chung từ 50% độ dài trở lên"]["n"] == 1
 
 
 def test_worst_languages_and_confidence():

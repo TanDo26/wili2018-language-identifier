@@ -3,7 +3,11 @@ uvicorn[standard]
 pydantic
 scikit-learn
 pandas
+numpy
 joblib
+
+# EDA – vẽ hình
+matplotlib
 
 # dev / test
 pytest

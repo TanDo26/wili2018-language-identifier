@@ -1,0 +1,494 @@
+{
+  "char_wb_1_3_100k|nb|nocrop": {
+    "preset": "char_wb_1_3_100k",
+    "classifier": "nb",
+    "augment": false,
+    "analyzer": "char_wb",
+    "ngram_range": [
+      1,
+      3
+    ],
+    "max_features": 100000,
+    "lowercase": true,
+    "n_train": 100724,
+    "n_features": 100000,
+    "model_mb": 376.0,
+    "fit_seconds": 72,
+    "val": {
+      "20": {
+        "accuracy": 0.7879,
+        "macro_f1": 0.7932
+      },
+      "30": {
+        "accuracy": 0.8364,
+        "macro_f1": 0.8409
+      },
+      "50": {
+        "accuracy": 0.8814,
+        "macro_f1": 0.8862
+      },
+      "100": {
+        "accuracy": 0.9212,
+        "macro_f1": 0.925
+      },
+      "full": {
+        "accuracy": 0.9429,
+        "macro_f1": 0.9466
+      }
+    },
+    "val_score": 0.8784,
+    "seconds_total": 86
+  },
+  "char_wb_1_3_300k|nb|nocrop": {
+    "preset": "char_wb_1_3_300k",
+    "classifier": "nb",
+    "augment": false,
+    "analyzer": "char_wb",
+    "ngram_range": [
+      1,
+      3
+    ],
+    "max_features": 300000,
+    "lowercase": true,
+    "n_train": 100724,
+    "n_features": 300000,
+    "model_mb": 1128.0,
+    "fit_seconds": 87,
+    "val": {
+      "20": {
+        "accuracy": 0.7864,
+        "macro_f1": 0.7913
+      },
+      "30": {
+        "accuracy": 0.8328,
+        "macro_f1": 0.8357
+      },
+      "50": {
+        "accuracy": 0.878,
+        "macro_f1": 0.8811
+      },
+      "100": {
+        "accuracy": 0.9177,
+        "macro_f1": 0.9207
+      },
+      "full": {
+        "accuracy": 0.9377,
+        "macro_f1": 0.9404
+      }
+    },
+    "val_score": 0.8738,
+    "seconds_total": 104
+  },
+  "char_wb_1_4_100k|nb|nocrop": {
+    "preset": "char_wb_1_4_100k",
+    "classifier": "nb",
+    "augment": false,
+    "analyzer": "char_wb",
+    "ngram_range": [
+      1,
+      4
+    ],
+    "max_features": 100000,
+    "lowercase": true,
+    "n_train": 100724,
+    "n_features": 100000,
+    "model_mb": 376.0,
+    "fit_seconds": 102,
+    "val": {
+      "20": {
+        "accuracy": 0.8209,
+        "macro_f1": 0.8259
+      },
+      "30": {
+        "accuracy": 0.8651,
+        "macro_f1": 0.8698
+      },
+      "50": {
+        "accuracy": 0.9023,
+        "macro_f1": 0.9073
+      },
+      "100": {
+        "accuracy": 0.9325,
+        "macro_f1": 0.9372
+      },
+      "full": {
+        "accuracy": 0.9487,
+        "macro_f1": 0.9527
+      }
+    },
+    "val_score": 0.8986,
+    "test": {
+      "20": {
+        "accuracy": 0.827,
+        "macro_f1": 0.829
+      },
+      "30": {
+        "accuracy": 0.8687,
+        "macro_f1": 0.8711
+      },
+      "50": {
+        "accuracy": 0.9053,
+        "macro_f1": 0.9074
+      },
+      "100": {
+        "accuracy": 0.9325,
+        "macro_f1": 0.9349
+      },
+      "full": {
+        "accuracy": 0.9484,
+        "macro_f1": 0.9503
+      }
+    },
+    "predictions_file": "experiments/output/predictions_char_wb_1_4_100k__nb__nocrop.csv",
+    "seconds_total": 318
+  },
+  "char_wb_1_3_100k_cased|nb|nocrop": {
+    "preset": "char_wb_1_3_100k_cased",
+    "classifier": "nb",
+    "augment": false,
+    "analyzer": "char_wb",
+    "ngram_range": [
+      1,
+      3
+    ],
+    "max_features": 100000,
+    "lowercase": false,
+    "n_train": 100724,
+    "n_features": 100000,
+    "model_mb": 376.0,
+    "fit_seconds": 68,
+    "val": {
+      "20": {
+        "accuracy": 0.7958,
+        "macro_f1": 0.8005
+      },
+      "30": {
+        "accuracy": 0.8443,
+        "macro_f1": 0.8487
+      },
+      "50": {
+        "accuracy": 0.8872,
+        "macro_f1": 0.892
+      },
+      "100": {
+        "accuracy": 0.923,
+        "macro_f1": 0.9268
+      },
+      "full": {
+        "accuracy": 0.9439,
+        "macro_f1": 0.9474
+      }
+    },
+    "val_score": 0.8831,
+    "seconds_total": 81
+  },
+  "char_1_3_100k|nb|nocrop": {
+    "preset": "char_1_3_100k",
+    "classifier": "nb",
+    "augment": false,
+    "analyzer": "char",
+    "ngram_range": [
+      1,
+      3
+    ],
+    "max_features": 100000,
+    "lowercase": true,
+    "n_train": 100724,
+    "n_features": 100000,
+    "model_mb": 376.0,
+    "fit_seconds": 62,
+    "val": {
+      "20": {
+        "accuracy": 0.7864,
+        "macro_f1": 0.7919
+      },
+      "30": {
+        "accuracy": 0.8395,
+        "macro_f1": 0.8443
+      },
+      "50": {
+        "accuracy": 0.8836,
+        "macro_f1": 0.8885
+      },
+      "100": {
+        "accuracy": 0.9221,
+        "macro_f1": 0.9264
+      },
+      "full": {
+        "accuracy": 0.9437,
+        "macro_f1": 0.9474
+      }
+    },
+    "val_score": 0.8797,
+    "seconds_total": 74
+  },
+  "char_wb_1_5_100k|nb|nocrop": {
+    "preset": "char_wb_1_5_100k",
+    "classifier": "nb",
+    "augment": false,
+    "analyzer": "char_wb",
+    "ngram_range": [
+      1,
+      5
+    ],
+    "max_features": 100000,
+    "lowercase": true,
+    "n_train": 100724,
+    "n_features": 100000,
+    "model_mb": 376.0,
+    "fit_seconds": 146,
+    "val": {
+      "20": {
+        "accuracy": 0.8189,
+        "macro_f1": 0.8236
+      },
+      "30": {
+        "accuracy": 0.8628,
+        "macro_f1": 0.8674
+      },
+      "50": {
+        "accuracy": 0.9017,
+        "macro_f1": 0.9066
+      },
+      "100": {
+        "accuracy": 0.9331,
+        "macro_f1": 0.9376
+      },
+      "full": {
+        "accuracy": 0.9487,
+        "macro_f1": 0.9527
+      }
+    },
+    "val_score": 0.8976,
+    "seconds_total": 167
+  },
+  "char_wb_1_4_100k_cased|nb|nocrop": {
+    "preset": "char_wb_1_4_100k_cased",
+    "classifier": "nb",
+    "augment": false,
+    "analyzer": "char_wb",
+    "ngram_range": [
+      1,
+      4
+    ],
+    "max_features": 100000,
+    "lowercase": false,
+    "n_train": 100724,
+    "n_features": 100000,
+    "model_mb": 376.0,
+    "fit_seconds": 99,
+    "val": {
+      "20": {
+        "accuracy": 0.8229,
+        "macro_f1": 0.8277
+      },
+      "30": {
+        "accuracy": 0.8664,
+        "macro_f1": 0.8709
+      },
+      "50": {
+        "accuracy": 0.9035,
+        "macro_f1": 0.9082
+      },
+      "100": {
+        "accuracy": 0.9331,
+        "macro_f1": 0.9377
+      },
+      "full": {
+        "accuracy": 0.9485,
+        "macro_f1": 0.9523
+      }
+    },
+    "val_score": 0.8994,
+    "seconds_total": 117
+  },
+  "char_wb_1_4_100k|nb|crop": {
+    "preset": "char_wb_1_4_100k",
+    "classifier": "nb",
+    "augment": true,
+    "analyzer": "char_wb",
+    "ngram_range": [
+      1,
+      4
+    ],
+    "max_features": 100000,
+    "lowercase": true,
+    "n_train": 301778,
+    "n_features": 100000,
+    "model_mb": 376.0,
+    "fit_seconds": 145,
+    "val": {
+      "20": {
+        "accuracy": 0.818,
+        "macro_f1": 0.8238
+      },
+      "30": {
+        "accuracy": 0.8633,
+        "macro_f1": 0.8691
+      },
+      "50": {
+        "accuracy": 0.9017,
+        "macro_f1": 0.9071
+      },
+      "100": {
+        "accuracy": 0.9323,
+        "macro_f1": 0.9372
+      },
+      "full": {
+        "accuracy": 0.9492,
+        "macro_f1": 0.9535
+      }
+    },
+    "val_score": 0.8981,
+    "test": {
+      "20": {
+        "accuracy": 0.8254,
+        "macro_f1": 0.829
+      },
+      "30": {
+        "accuracy": 0.868,
+        "macro_f1": 0.8717
+      },
+      "50": {
+        "accuracy": 0.9044,
+        "macro_f1": 0.9078
+      },
+      "100": {
+        "accuracy": 0.9322,
+        "macro_f1": 0.9355
+      },
+      "full": {
+        "accuracy": 0.9486,
+        "macro_f1": 0.9513
+      }
+    },
+    "predictions_file": "experiments/output/predictions_char_wb_1_4_100k__nb__crop.csv",
+    "seconds_total": 368
+  },
+  "char_wb_1_4_100k|sgd|nocrop": {
+    "preset": "char_wb_1_4_100k",
+    "classifier": "sgd",
+    "augment": false,
+    "analyzer": "char_wb",
+    "ngram_range": [
+      1,
+      4
+    ],
+    "max_features": 100000,
+    "lowercase": true,
+    "n_train": 100724,
+    "n_features": 100000,
+    "model_mb": 94.0,
+    "fit_seconds": 167,
+    "val": {
+      "20": {
+        "accuracy": 0.543,
+        "macro_f1": 0.6231
+      },
+      "30": {
+        "accuracy": 0.6739,
+        "macro_f1": 0.7354
+      },
+      "50": {
+        "accuracy": 0.8177,
+        "macro_f1": 0.8459
+      },
+      "100": {
+        "accuracy": 0.9244,
+        "macro_f1": 0.928
+      },
+      "full": {
+        "accuracy": 0.9659,
+        "macro_f1": 0.9664
+      }
+    },
+    "val_score": 0.8198,
+    "test": {
+      "20": {
+        "accuracy": 0.5446,
+        "macro_f1": 0.6257
+      },
+      "30": {
+        "accuracy": 0.6784,
+        "macro_f1": 0.7388
+      },
+      "50": {
+        "accuracy": 0.8201,
+        "macro_f1": 0.847
+      },
+      "100": {
+        "accuracy": 0.9221,
+        "macro_f1": 0.9249
+      },
+      "full": {
+        "accuracy": 0.9656,
+        "macro_f1": 0.9657
+      }
+    },
+    "predictions_file": "experiments/output/predictions_char_wb_1_4_100k__sgd__nocrop.csv",
+    "seconds_total": 391
+  },
+  "char_wb_1_4_100k|sgd|crop": {
+    "preset": "char_wb_1_4_100k",
+    "classifier": "sgd",
+    "augment": true,
+    "analyzer": "char_wb",
+    "ngram_range": [
+      1,
+      4
+    ],
+    "max_features": 100000,
+    "lowercase": true,
+    "n_train": 301778,
+    "n_features": 100000,
+    "model_mb": 94.0,
+    "fit_seconds": 304,
+    "val": {
+      "20": {
+        "accuracy": 0.7603,
+        "macro_f1": 0.7643
+      },
+      "30": {
+        "accuracy": 0.8357,
+        "macro_f1": 0.8376
+      },
+      "50": {
+        "accuracy": 0.898,
+        "macro_f1": 0.8992
+      },
+      "100": {
+        "accuracy": 0.9446,
+        "macro_f1": 0.945
+      },
+      "full": {
+        "accuracy": 0.9673,
+        "macro_f1": 0.9675
+      }
+    },
+    "val_score": 0.8827,
+    "test": {
+      "20": {
+        "accuracy": 0.7648,
+        "macro_f1": 0.7681
+      },
+      "30": {
+        "accuracy": 0.8386,
+        "macro_f1": 0.8398
+      },
+      "50": {
+        "accuracy": 0.9009,
+        "macro_f1": 0.9012
+      },
+      "100": {
+        "accuracy": 0.9428,
+        "macro_f1": 0.9431
+      },
+      "full": {
+        "accuracy": 0.9666,
+        "macro_f1": 0.9665
+      }
+    },
+    "predictions_file": "experiments/output/predictions_char_wb_1_4_100k__sgd__crop.csv",
+    "seconds_total": 493
+  }
+}

@@ -1,0 +1,181 @@
+{
+  "_note": "File mẫu – cấu trúc của data/processed/stats.json (sinh bởi `python -m data.stats`). Danh sách languages đã rút gọn; file thật có đủ 235 ngôn ngữ.",
+  "schema_version": "1.1",
+  "generated_at": "2026-11-02T00:00:00+00:00",
+  "dataset": {
+    "name": "WiLI-2018",
+    "version": "1.0.0",
+    "source_url": "https://zenodo.org/records/841984",
+    "doi": "10.5281/zenodo.841984",
+    "license": "ODbL-1.0",
+    "raw_md5": "3dc5bd41587811ad6b0d04ae2f235f84"
+  },
+  "split": {
+    "seed": 42,
+    "val_per_language": 50,
+    "val_max_fraction": 0.5,
+    "val_short_languages": {
+      "hat": 46,
+      "che": 29
+    },
+    "split_ids_file": "data/splits/split_ids.csv",
+    "split_ids_sha256": "7a8656e07fd501f8e62b1d7d50f3506ff1302cc092ecc666ce1a4993d2845e7b"
+  },
+  "num_languages": 235,
+  "splits": {
+    "train": {
+      "file": "data/processed/train.csv",
+      "sha256": "7be0be3beab2d802cfc4a344a4eaad4666065053beaacac69957d2c049847148",
+      "num_samples": 100724,
+      "min_per_language": 30,
+      "max_per_language": 450,
+      "length_chars": {
+        "count": 100724,
+        "min": 140,
+        "p5": 148.0,
+        "p25": 191.0,
+        "median": 275.0,
+        "mean": 373.9,
+        "p75": 437.0,
+        "p95": 878.85,
+        "max": 40578
+      }
+    },
+    "val": {
+      "file": "data/processed/val.csv",
+      "sha256": "847758611a2aa82ea02c8f9bad8b2c838acad26064b7c2d321e6f1eea692044f",
+      "num_samples": 11725,
+      "min_per_language": 29,
+      "max_per_language": 50,
+      "length_chars": {
+        "count": 11725,
+        "min": 140,
+        "p5": 148.0,
+        "p25": 192.0,
+        "median": 275.0,
+        "mean": 371.3,
+        "p75": 432.0,
+        "p95": 848.0,
+        "max": 34656
+      }
+    },
+    "test": {
+      "file": "data/processed/test.csv",
+      "sha256": "0706b72e7f4400add33852c4be70dc2fa64297b7d6c903561376ed2bd7a7dfbe",
+      "num_samples": 113283,
+      "min_per_language": 66,
+      "max_per_language": 500,
+      "length_chars": {
+        "count": 113283,
+        "min": 140,
+        "p5": 148.0,
+        "p25": 191.0,
+        "median": 274.0,
+        "mean": 376.54,
+        "p75": 436.0,
+        "p95": 878.0,
+        "max": 195402
+      }
+    }
+  },
+  "augmentation": {
+    "train_crops": {
+      "file": "data/processed/train_crops.csv",
+      "sha256": "42893901b70db3bf46a927b850e81c00ee5ef2e8de988ed0d9685f2b139f2f7a",
+      "num_samples": 201054
+    },
+    "val_short": {
+      "file": "data/processed/val_short.csv",
+      "sha256": "983d827b5e7537048bc6924e22aa8a6fdea122258a69f428c82128f31c78527e",
+      "num_samples": 46900
+    },
+    "test_short": {
+      "file": "data/processed/test_short.csv",
+      "sha256": "1e4d1d3dd067d85647e6def4d47c86bbc0959272179605235f3f1b60bdd0c3b8",
+      "num_samples": 453132
+    }
+  },
+  "cleaning": {
+    "raw": {
+      "train": 117500,
+      "test": 117500
+    },
+    "removed": {
+      "empty": {
+        "train": 0,
+        "test": 0
+      },
+      "no_letters": {
+        "train": 32,
+        "test": 37
+      },
+      "conflicting_labels": {
+        "train": 250,
+        "test": 282
+      },
+      "duplicate_within_split": {
+        "train": 3889,
+        "test": 3898
+      },
+      "overlap_with_test": {
+        "train": 880,
+        "test": 0
+      }
+    },
+    "removed_total": {
+      "train": 5051,
+      "test": 4217
+    },
+    "clean": {
+      "train": 112449,
+      "test": 113283
+    },
+    "conflicting_texts": 134
+  },
+  "leakage": {
+    "passed": true,
+    "pairs": {
+      "train-val": {
+        "id": 0,
+        "exact": 0,
+        "near": 0
+      },
+      "train-test": {
+        "id": 0,
+        "exact": 0,
+        "near": 0
+      },
+      "val-test": {
+        "id": 0,
+        "exact": 0,
+        "near": 0
+      }
+    }
+  },
+  "languages": [
+    {
+      "code": "che",
+      "name": "Chechen",
+      "family": "Northeast Caucasian",
+      "train": 30,
+      "val": 29,
+      "test": 66
+    },
+    {
+      "code": "eng",
+      "name": "English",
+      "family": "Indo-European",
+      "train": 450,
+      "val": 50,
+      "test": 500
+    },
+    {
+      "code": "vie",
+      "name": "Vietnamese",
+      "family": "Austronesian",
+      "train": 449,
+      "val": 50,
+      "test": 500
+    }
+  ]
+}

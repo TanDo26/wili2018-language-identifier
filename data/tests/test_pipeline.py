@@ -1,9 +1,19 @@
 import pandas as pd
 
-from data.check_leakage import find_leaks
+from data.check_leakage import (
+    OVERLAP_STRIDE,
+    OVERLAP_WINDOW,
+    find_leaks,
+    partial_overlap,
+    shared_fraction,
+    window_hashes,
+)
 from data.clean import clean
-from data.common import near_dup_key, normalize_text, read_lines, read_split, write_split
+from data.common import near_dup_key, normalize_text, read_lines, read_split, text_hash, write_split
 from data.split import make_val_split
+
+# Các ký tự đều khác nhau nên mỗi cửa sổ chỉ khớp đúng một vị trí.
+DISTINCT = "".join(chr(0x4e00 + i) for i in range(400))
 
 
 def _df(prefix, rows):
@@ -41,6 +51,13 @@ def test_csv_roundtrip_keeps_nan_label(tmp_path):
     df = pd.DataFrame({"id": ["tr_000000"], "text": ["NA"], "label": ["nan"]})
     write_split(df, tmp_path / "s.csv")
     assert read_split(tmp_path / "s.csv").equals(df)
+
+
+def test_text_hash_ignores_line_endings(tmp_path):
+    lf, crlf = tmp_path / "lf.csv", tmp_path / "crlf.csv"
+    lf.write_bytes(b"id,split\ntr_000000,train\n")
+    crlf.write_bytes(b"id,split\r\ntr_000000,train\r\n")
+    assert text_hash(lf) == text_hash(crlf)
 
 
 def test_clean_removes_duplicates_conflicts_and_train_test_overlap():
@@ -138,3 +155,36 @@ def test_find_leaks_detects_mismatch_with_split_ids():
     report = find_leaks(frames, ids)
     assert report["split_ids"]["mismatched"] == 1
     assert not report["passed"]
+
+
+def test_shared_fraction_counts_each_character_once():
+    windows = window_hashes([DISTINCT[:100]])
+    half_shared = DISTINCT[:60] + DISTINCT[200:260]
+    assert shared_fraction(half_shared, windows) == 0.5
+    assert shared_fraction(DISTINCT[200:320], windows) == 0.0
+
+    repeated = "abcdefghij" * 10  # cùng một cửa sổ khớp nhiều vị trí, tỉ lệ vẫn không vượt quá 1
+    assert shared_fraction(repeated, window_hashes([repeated])) == 1.0
+
+
+def test_shared_segment_is_found_at_any_offset():
+    windows = window_hashes([DISTINCT[:200]])
+    shortest = OVERLAP_WINDOW + OVERLAP_STRIDE - 1
+    for offset in range(OVERLAP_STRIDE):
+        text = DISTINCT[offset:offset + shortest] + DISTINCT[300:360]
+        assert shared_fraction(text, windows) > 0, offset
+
+
+def test_partial_overlap_is_reported_but_does_not_fail_the_check():
+    template = "Làng này nằm ở phía bắc của huyện, dân cư chủ yếu làm nông nghiệp và đánh cá ven sông quanh năm."
+    frames = _splits()
+    frames["train"].loc[0, "text"] = f"Làng An. {template}"
+    frames["test"].loc[0, "text"] = f"Làng Bình. {template}"  # khác tên riêng nên near_dup_key không bắt được
+
+    summary, rows = partial_overlap(frames)
+
+    assert summary["test"]["num_samples"] == 2
+    assert summary["test"]["any"] == 1 and summary["test"]["at_least_50pct"] == 1
+    assert summary["val"]["any"] == 0
+    assert rows["id"].tolist() == ["te_000000"] and rows["split"].tolist() == ["test"]
+    assert find_leaks(frames)["passed"]

@@ -9,7 +9,6 @@ xem data/stats.example.json.
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
@@ -36,7 +35,7 @@ from data.common import (
 )
 from data.download import DOI, EXPECTED_MD5, LICENSE, RECORD_URL
 
-SCHEMA_VERSION = "1.1"
+SCHEMA_VERSION = "1.2"
 
 
 def augmentation_info(processed_dir: Path = PROCESSED_DIR) -> dict:
@@ -70,7 +69,6 @@ def build_stats(frames: dict[str, pd.DataFrame], labels: pd.DataFrame, clean_rep
 
     return {
         "schema_version": SCHEMA_VERSION,
-        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "dataset": {
             "name": "WiLI-2018",
             "version": "1.0.0",
@@ -95,6 +93,7 @@ def build_stats(frames: dict[str, pd.DataFrame], labels: pd.DataFrame, clean_rep
             "passed": leakage_report["passed"],
             "pairs": {pair: {check: v["count"] for check, v in checks.items()}
                       for pair, checks in leakage_report["pairs"].items()},
+            "partial_overlap": leakage_report.get("partial_overlap"),
         },
         "languages": [
             {

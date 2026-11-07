@@ -13,6 +13,9 @@ data/processed/*
 # Dự đoán chi tiết của experiments (nặng, tạo lại bằng feature_search --final)
 experiments/output/
 
+# Báo cáo xuất từ API (có văn bản người dùng nhập)
+exports/
+
 # Python
 __pycache__/
 *.pyc

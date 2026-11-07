@@ -1,7 +1,6 @@
 {
   "_note": "File mẫu – cấu trúc của data/processed/stats.json (sinh bởi `python -m data.stats`). Danh sách languages đã rút gọn; file thật có đủ 235 ngôn ngữ.",
-  "schema_version": "1.1",
-  "generated_at": "2026-11-02T00:00:00+00:00",
+  "schema_version": "1.2",
   "dataset": {
     "name": "WiLI-2018",
     "version": "1.0.0",
@@ -149,6 +148,24 @@
         "id": 0,
         "exact": 0,
         "near": 0
+      }
+    },
+    "partial_overlap": {
+      "window_chars": 40,
+      "always_detected_from_chars": 59,
+      "val": {
+        "num_samples": 11725,
+        "any": 1585,
+        "at_least_25pct": 1263,
+        "at_least_50pct": 742,
+        "at_least_80pct": 278
+      },
+      "test": {
+        "num_samples": 113283,
+        "any": 14769,
+        "at_least_25pct": 11669,
+        "at_least_50pct": 6904,
+        "at_least_80pct": 2706
       }
     }
   },

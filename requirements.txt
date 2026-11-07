@@ -1,14 +1,17 @@
-fastapi
-uvicorn[standard]
-pydantic
-scikit-learn
-pandas
-numpy
-joblib
+# Khóa phiên bản: model.joblib cần nạp bằng đúng bộ thư viện đã train nó,
+# và số liệu trong experiments/results được đo trên các phiên bản này.
+fastapi==0.141.1
+uvicorn[standard]==0.52.0
+pydantic==2.14.1
+scikit-learn==1.7.2
+pandas==2.3.3
+numpy==2.3.5
+scipy==1.16.3
+joblib==1.5.2
 
 # EDA – vẽ hình
-matplotlib
+matplotlib==3.10.6
 
 # dev / test
-pytest
-httpx
+pytest==8.4.2
+httpx==0.28.1

@@ -1,8 +1,8 @@
 """Cập nhật mô hình: xử lý dữ liệu -> train -> đánh giá -> tạo version mới trong models/.
 
     make retrain                                        # hoặc: python -m scripts.retrain
-    python -m scripts.retrain --features char_wb_1_3_100k --no-augment
-    python -m scripts.retrain --feedback exports/accepted_reports.csv
+    python -m scripts.retrain --algorithm svm --features char_wb_1_3_100k --no-augment
+    python -m scripts.retrain --feedback exports/accepted_reports.csv   # file từ data.export_reports
     python -m scripts.retrain --skip-data               # dữ liệu đã có, chỉ train lại
 
 Các bước:
@@ -18,14 +18,16 @@ Các bước:
 Interface ml.train / ml.evaluate cần hỗ trợ (thỏa thuận A – B):
 
   python -m ml.train --data-dir data/processed --out-dir <thư mục> --features <preset>
-                     [--augment] [--feedback]
+                     --algorithm <baseline|naive_bayes|svm> [--augment] [--feedback]
       -> <thư mục>/model.joblib: sklearn Pipeline (vectorizer từ ml.features + bộ phân loại),
          có predict / predict_proba trên danh sách chuỗi đã chuẩn hóa.
-         --augment : học thêm data/processed/train_crops.csv
-         --feedback: học thêm data/processed/train_feedback.csv
+         --algorithm: chọn mô hình trong ml/baseline.py, ml/naive_bayes.py, ml/svm.py
+         --augment  : học thêm data/processed/train_crops.csv
+         --feedback : học thêm data/processed/train_feedback.csv
   python -m ml.evaluate --model-dir <thư mục> --data-dir data/processed
       -> <thư mục>/metrics.json, tối thiểu {"accuracy", "macro_f1"} trên test.csv; nên có thêm
-         "by_length" trên test_short.csv.
+         "by_length" trên test_short.csv và "no_overlap" ({"accuracy", "macro_f1"}) trên các đoạn
+         test không có trong overlap_with_train.csv.
 """
 from __future__ import annotations
 
@@ -54,6 +56,9 @@ from data.common import (
 from ml.features import DEFAULT_PRESET, FEATURE_PRESETS, preset_params
 
 MODELS_DIR = ROOT / "models"
+# Trùng tên các file mô hình của B trong ml/. Mặc định theo kết quả trên val (experiments/results).
+ALGORITHMS = ("baseline", "naive_bayes", "svm")
+DEFAULT_ALGORITHM = "naive_bayes"
 REQUIRED_FILES = ("model.joblib", "metrics.json")
 REQUIRED_METRICS = ("accuracy", "macro_f1")
 VERSION_RE = re.compile(r"^v(\d+)$")
@@ -117,6 +122,7 @@ def build_meta(version: str, args, metrics: dict) -> dict:
         "version": version,
         "status": "candidate",
         "created_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "algorithm": args.algorithm,
         "features": {"preset": args.features,
                      **{k: (list(v) if isinstance(v, tuple) else v) for k, v in params.items() if k != "dtype"}},
         "augment": args.augment,
@@ -144,7 +150,7 @@ def retrain(args) -> Path:
     tmp.mkdir()
     try:
         run_step("train", [args.train_module, "--data-dir", rel(PROCESSED_DIR), "--out-dir", rel(tmp),
-                           "--features", args.features,
+                           "--features", args.features, "--algorithm", args.algorithm,
                            *(["--augment"] if args.augment else []),
                            *(["--feedback"] if args.feedback else [])])
         run_step("đánh giá", [args.eval_module, "--model-dir", rel(tmp), "--data-dir", rel(PROCESSED_DIR)])
@@ -171,6 +177,7 @@ def main(argv=None) -> Path:
     setup_console()
     parser = argparse.ArgumentParser(description="Xử lý dữ liệu -> train -> đánh giá -> tạo version mới")
     parser.add_argument("--features", choices=sorted(FEATURE_PRESETS), default=DEFAULT_PRESET)
+    parser.add_argument("--algorithm", choices=ALGORITHMS, default=DEFAULT_ALGORITHM)
     parser.add_argument("--augment", action=argparse.BooleanOptionalAction, default=True,
                         help="học thêm các đoạn cắt ngắn (mặc định: có)")
     parser.add_argument("--feedback", type=Path, help="CSV báo cáo đã duyệt xuất từ API")

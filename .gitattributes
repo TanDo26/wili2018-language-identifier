@@ -1,0 +1,12 @@
+# Giữ LF trên mọi máy, để hash và `git status` không phụ thuộc hệ điều hành hay core.autocrlf.
+# Đây là các file được commit nhưng được ghi lại khi chạy pipeline / phân tích.
+data/splits/*               text eol=lf
+data/processed/labels.csv   text eol=lf
+data/processed/stats.json   text eol=lf
+data/reports/*.json         text eol=lf
+data/reports/*.md           text eol=lf
+experiments/results/*.json  text eol=lf
+experiments/results/*.md    text eol=lf
+
+# make không chạy đúng nếu dòng lệnh kết thúc bằng CR
+Makefile                    text eol=lf

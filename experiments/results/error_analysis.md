@@ -18,6 +18,18 @@ Cấu hình chính: `char_wb_1_4_100k__nb__nocrop`. Tập test: 113,283 đoạn 
 
 Mỗi ô: accuracy / macro-F1.
 
+## Ảnh hưởng của văn bản chung với train
+
+Điểm trên đoạn test đầy đủ, tách theo phần văn bản chung với train (bài do bot tạo theo mẫu, chỉ khác tên riêng – xem `data/check_leakage.py`).
+
+| Nhóm | Số đoạn | NB, không crop | SGD, có crop | SGD, không crop |
+|---|---:|---:|---:|---:|
+| Toàn bộ test | 113,283 | 94.84% / 95.03% | 96.66% / 96.65% | 96.56% / 96.57% |
+| Không có văn bản chung với train | 98,514 | 94.41% / 93.65% | 96.29% / 96.06% | 96.14% / 95.88% |
+| Chung từ 50% độ dài trở lên | 6,904 | 98.26% / 90.03% | 99.36% / 95.43% | 99.39% / 95.68% |
+
+Mỗi ô: accuracy / macro-F1. Các nhóm có tỉ lệ ngôn ngữ khác nhau, nên chênh lệch giữa các dòng không hoàn toàn do rò rỉ.
+
 ## Cặp ngôn ngữ hay bị nhầm – đoạn đầy đủ
 
 | Cặp | Lỗi a→b | Lỗi b→a | Tổng lỗi | Tỉ lệ | Cùng họ | Cùng hệ chữ |

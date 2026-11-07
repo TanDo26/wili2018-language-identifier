@@ -24,6 +24,7 @@ REPORTS_DIR = DATA_DIR / "reports"
 SPLIT_IDS_PATH = SPLITS_DIR / "split_ids.csv"
 CLEAN_REPORT_PATH = INTERIM_DIR / "clean_report.json"
 LEAKAGE_REPORT_PATH = PROCESSED_DIR / "leakage_report.json"
+OVERLAP_PATH = PROCESSED_DIR / "overlap_with_train.csv"
 LABELS_PATH = PROCESSED_DIR / "labels.csv"
 STATS_PATH = PROCESSED_DIR / "stats.json"
 TRAIN_CROPS_PATH = PROCESSED_DIR / "train_crops.csv"
@@ -136,6 +137,11 @@ def file_hash(path: Path, algo: str = "sha256", chunk_size: int = 1 << 20) -> st
         for chunk in iter(lambda: f.read(chunk_size), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+def text_hash(path: Path, algo: str = "sha256") -> str:
+    """Hash của file văn bản đã commit, không phụ thuộc xuống dòng (bản clone Windows có thể là CRLF)."""
+    return hashlib.new(algo, path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
 
 
 def length_stats(lengths) -> dict:

@@ -216,7 +216,7 @@ def main(argv=None):
                       + "  ".join(f"{b}:{record['val'][b]['macro_f1']:.1%}" for b in BUCKETS)
                       + f"  ({record['seconds_total']}s)", flush=True)
 
-    (RESULTS_DIR / "feature_search.md").write_text(to_markdown(results), encoding="utf-8")
+    (RESULTS_DIR / "feature_search.md").write_text(to_markdown(results), encoding="utf-8", newline="\n")
     print(f"Đã ghi {rel(RESULTS_JSON)} và {rel(RESULTS_DIR / 'feature_search.md')}")
 
 

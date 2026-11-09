@@ -1,0 +1,130 @@
+{
+  "version": "v1",
+  "model": "nb",
+  "trained_on": "TEMPORARY 90/10 split of Hugging Face train set",
+  "val": {
+    "accuracy": 0.9442553191489361,
+    "macro_f1": 0.9490562080402154,
+    "top_confused_pairs": [
+      {
+        "true": "cbk",
+        "pred": "spa",
+        "count": 19
+      },
+      {
+        "true": "oci",
+        "pred": "fra",
+        "count": 15
+      },
+      {
+        "true": "hbs",
+        "pred": "hrv",
+        "count": 12
+      },
+      {
+        "true": "nci",
+        "pred": "spa",
+        "count": 10
+      },
+      {
+        "true": "ava",
+        "pred": "eng",
+        "count": 10
+      },
+      {
+        "true": "kok",
+        "pred": "mar",
+        "count": 9
+      },
+      {
+        "true": "hrv",
+        "pred": "hbs",
+        "count": 9
+      },
+      {
+        "true": "bos",
+        "pred": "hrv",
+        "count": 9
+      },
+      {
+        "true": "cbk",
+        "pred": "eng",
+        "count": 8
+      },
+      {
+        "true": "dty",
+        "pred": "nep",
+        "count": 8
+      },
+      {
+        "true": "pam",
+        "pred": "tgl",
+        "count": 7
+      },
+      {
+        "true": "bos",
+        "pred": "hbs",
+        "count": 6
+      },
+      {
+        "true": "guj",
+        "pred": "eng",
+        "count": 6
+      },
+      {
+        "true": "hbs",
+        "pred": "bos",
+        "count": 6
+      },
+      {
+        "true": "arz",
+        "pred": "ara",
+        "count": 6
+      }
+    ],
+    "accuracy_by_text_length": {
+      "100-200": {
+        "n": 3366,
+        "accuracy": 0.9194890077243019
+      },
+      "200-500": {
+        "n": 6158,
+        "accuracy": 0.9548554725560247
+      },
+      "500-inf": {
+        "n": 2226,
+        "accuracy": 0.9523809523809523
+      }
+    },
+    "mixed_language_check": {
+      "pairs": 496,
+      "prediction_is_one_of_the_two": 0.9455645161290323
+    },
+    "latency_ms_median": 112.00895449997006,
+    "latency_ms_p95": 128.64826644998854
+  },
+  "test": null,
+  "train_seconds": 11.197365760803223,
+  "tuning": [
+    {
+      "value": 0.01,
+      "val_macro_f1": 0.9490562080402154
+    },
+    {
+      "value": 0.03,
+      "val_macro_f1": 0.9468962441909969
+    },
+    {
+      "value": 0.1,
+      "val_macro_f1": 0.9436686793505753
+    },
+    {
+      "value": 0.3,
+      "val_macro_f1": 0.940406264563693
+    },
+    {
+      "value": 1.0,
+      "val_macro_f1": 0.9338547949241838
+    }
+  ]
+}

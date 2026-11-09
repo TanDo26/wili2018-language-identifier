@@ -1,10 +1,14 @@
-"""FastAPI app – phục vụ mô hình cho web (xem openapi.yaml)."""
-import os
+import json
 import sqlite3
-from typing import List
+import os
+from contextlib import asynccontextmanager
+from typing import List, Dict, Any
+
+import joblib
 from fastapi import FastAPI, HTTPException, status
 
-from api.schemas import (
+# Import schemas từ file schemas.py của mày
+from app.schemas import (
     PredictRequest,
     PredictResponse,
     Candidate,
@@ -14,18 +18,15 @@ from api.schemas import (
     ModelVersion
 )
 
-app = FastAPI(
-    title="HTTM API - Language Identification System",
-    version="0.1.0",
-    description="Backend API phục vụ phân loại ngôn ngữ WiLI-2018"
-)
+# -----------------------------------------------------------------------------
+# 1. Biến toàn cục lưu trữ Model & Metadata
+# -----------------------------------------------------------------------------
+ML_COMPONENTS: Dict[str, Any] = {}
+DB_PATH = "database/reports.db"
 
-# -----------------------------------------------------------------------------
-# 1. Khởi tạo SQLite Database cho User Feedback Report
-# -----------------------------------------------------------------------------
-DB_PATH = "reports.db"
 
 def init_db():
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
@@ -41,79 +42,123 @@ def init_db():
     conn.commit()
     conn.close()
 
-init_db()
+
+# -----------------------------------------------------------------------------
+# 2. Lifespan: Load file 1GB và Config vào RAM khi server start
+# -----------------------------------------------------------------------------
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Khởi tạo DB
+    init_db()
+
+    print("--> Đang load Model 1GB và các file cấu hình vào RAM...")
+    
+    # Đường dẫn đến các file
+    model_path = "artifacts/model.joblib"       # Thay bằng tên file 1GB thực tế của mày
+    config_path = "artifacts/config_2.json"
+    metrics_path = "artifacts/metrics_2.json"
+
+    # Load Config & Metrics
+    if os.path.exists(config_path):
+        with open(config_path, "r", encoding="utf-8") as f:
+            ML_COMPONENTS["config"] = json.load(f)
+
+    if os.path.exists(metrics_path):
+        with open(metrics_path, "r", encoding="utf-8") as f:
+            ML_COMPONENTS["metrics"] = json.load(f)
+
+    # Load Model nặng ~1GB
+    if os.path.exists(model_path):
+        ML_COMPONENTS["model"] = joblib.load(model_path)
+        print("--> Load Model thành công!")
+    else:
+        print(f"--> WARN: Không tìm thấy file model tại {model_path}")
+
+    ML_COMPONENTS["active_version"] = ML_COMPONENTS.get("config", {}).get("version", "v1")
+
+    yield  # Ứng dụng chạy ở đây
+
+    # Clean up khi shutdown server (nếu cần)
+    ML_COMPONENTS.clear()
+    print("--> Đã giải phóng bộ nhớ RAM.")
 
 
 # -----------------------------------------------------------------------------
-# 2. Mock Model (Tạm thời phục vụ test API trước khi nạp model ML thật)
+# 3. Khởi tạo FastAPI App
 # -----------------------------------------------------------------------------
-class MockModel:
-    def __init__(self):
-        self.active_version = "v1"
+app = FastAPI(
+    title="HTTM API - Language Identification System",
+    version="0.1.0",
+    description="Backend API phục vụ phân loại ngôn ngữ WiLI-2018",
+    lifespan=lifespan
+)
 
-    def predict(self, text: str) -> PredictResponse:
-        text_lower = text.lower()
-        text_len = len(text)
-        
-        # Giả lập logic dự đoán
-        if any(w in text_lower for w in ["the", "is", "and", "this"]):
-            lang_code, lang_name = "eng", "English"
-            confidence = 0.92
-        elif any(w in text_lower for w in ["ngôn", "ngữ", "bài", "tập", "chào"]):
-            lang_code, lang_name = "vie", "Vietnamese"
-            confidence = 0.88
-        elif any(w in text_lower for w in ["le", "la", "est", "un", "des"]):
-            lang_code, lang_name = "fra", "French"
-            confidence = 0.85
-        else:
-            lang_code, lang_name = "unk", "Unknown / Ambiguous"
-            confidence = 0.35
 
-        # Cảnh báo nếu text ngắn dưới 140 ký tự hoặc confidence < 0.4
-        is_unsure = confidence < 0.4 or text_len < 140
-        
-        explanations = []
-        if text_len < 140:
-            explanations.append("Warning: Text length is under 140 characters, prediction confidence may be lower than expected.")
-        
-        if confidence < 0.4:
-            explanations.append("Low confidence score: text contains ambiguous or insufficient n-gram features.")
-        else:
-            explanations.append(f"Contains strong characteristic n-gram features for {lang_name}.")
+# -----------------------------------------------------------------------------
+# 4. Logic Dự đoán thực tế (Inference Logic)
+# -----------------------------------------------------------------------------
+def predict_text(text: str) -> PredictResponse:
+    model = ML_COMPONENTS.get("model")
+    config = ML_COMPONENTS.get("config", {})
 
-        top_candidates = [
-            Candidate(code=lang_code, name=lang_name, confidence=confidence),
-            Candidate(
-                code="eng" if lang_code != "eng" else "fra", 
-                name="English" if lang_code != "eng" else "French", 
-                confidence=round((1 - confidence) * 0.7, 2)
-            ),
-            Candidate(
-                code="vie" if lang_code != "vie" else "deu", 
-                name="Vietnamese" if lang_code != "vie" else "German", 
-                confidence=round((1 - confidence) * 0.3, 2)
-            )
-        ]
-
-        return PredictResponse(
-            language_code=lang_code,
-            language_name=lang_name,
-            confidence=confidence,
-            is_unsure=is_unsure,
-            explanation=explanations,
-            top_candidates=top_candidates
+    if not model:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Model chưa sẵn sàng hoặc load thất bại."
         )
 
-mock_model = MockModel()
+    text_len = len(text)
+
+    # 1. Dự đoán xác suất (Predict Probabilities)
+    # Giả sử model là Pipeline (Vectorizer + Classifier) có predict_proba
+    probabilities = model.predict_proba([text])[0]
+    classes = model.classes_  # Danh sách nhãn ISO code
+
+    # Sắp xếp lấy Top candidates
+    top_indices = probabilities.argsort()[::-1][:3]
+    top_candidates = []
+
+    for idx in top_indices:
+        code = str(classes[idx])
+        conf = float(round(probabilities[idx], 4))
+        # Có thể dùng config["iso_codes"] để lấy tên chuẩn nếu có dict ánh xạ
+        name = config.get("iso_codes", {}).get(code, code)
+        top_candidates.append(Candidate(code=code, name=name, confidence=conf))
+
+    top_1 = top_candidates[0]
+    confidence = top_1.confidence
+    is_unsure = confidence < 0.4 or text_len < 140
+
+    # Cảnh báo / giải thích
+    explanations = []
+    if text_len < 140:
+        explanations.append("Warning: Text length is under 140 characters, prediction confidence may be lower.")
+    if confidence < 0.4:
+        explanations.append("Low confidence score: text contains ambiguous features.")
+    else:
+        explanations.append(f"Contains strong characteristic n-gram features for {top_1.name}.")
+
+    return PredictResponse(
+        language_code=top_1.code,
+        language_name=top_1.name,
+        confidence=confidence,
+        is_unsure=is_unsure,
+        explanation=explanations,
+        top_candidates=top_candidates
+    )
 
 
 # -----------------------------------------------------------------------------
-# 3. API Endpoints
+# 5. API Endpoints
 # -----------------------------------------------------------------------------
 
 @app.get("/health", summary="Kiểm tra API còn hoạt động")
 def health():
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "model_loaded": "model" in ML_COMPONENTS,
+        "active_version": ML_COMPONENTS.get("active_version", "unknown")
+    }
 
 
 @app.post("/api/v1/predict", response_model=PredictResponse, summary="Dự đoán ngôn ngữ cho 1 đoạn văn bản")
@@ -129,11 +174,11 @@ def predict(payload: PredictRequest):
             status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
             detail="Text length exceeds maximum allowed limit of 5000 characters."
         )
-    
-    return mock_model.predict(payload.text)
+
+    return predict_text(payload.text)
 
 
-@app.post("/api/v1/predict-batch", response_model=BatchPredictResponse, summary="Dự đoán hàng loạt (Batch Processing)")
+@app.post("/api/v1/predict-batch", response_model=BatchPredictResponse, summary="Dự đoán hàng loạt")
 def predict_batch(payload: BatchPredictRequest):
     results = []
     for item in payload.texts:
@@ -143,7 +188,7 @@ def predict_batch(payload: BatchPredictRequest):
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Each text in batch must be between 20 and 5000 characters."
             )
-        results.append(mock_model.predict(item))
+        results.append(predict_text(item))
     return BatchPredictResponse(results=results)
 
 
@@ -158,40 +203,30 @@ def report_issue(payload: ReportRequest):
     report_id = cursor.lastrowid
     conn.commit()
     conn.close()
-    
+
     return {"message": "Report saved successfully", "report_id": report_id}
 
 
 @app.get("/api/v1/models", response_model=List[ModelVersion], summary="Lấy danh sách các phiên bản mô hình")
 def list_models():
+    metrics = ML_COMPONENTS.get("metrics", {}).get("val", {})
+    acc = metrics.get("accuracy", 0.944)
+    f1 = metrics.get("macro_f1", 0.949)
+    active_ver = ML_COMPONENTS.get("active_version", "v1")
+
     return [
         ModelVersion(
             version="v1",
             algorithm="Multinomial Naive Bayes",
-            is_active=(mock_model.active_version == "v1"),
-            accuracy=0.915,
-            macro_f1=0.908
+            is_active=(active_ver == "v1"),
+            accuracy=acc,
+            macro_f1=f1
         ),
         ModelVersion(
             version="v2",
             algorithm="Linear SVM",
-            is_active=(mock_model.active_version == "v2"),
+            is_active=(active_ver == "v2"),
             accuracy=0.932,
             macro_f1=0.926
         )
     ]
-
-
-@app.post("/api/v1/models/promote", summary="Promote mô hình")
-def promote_model(payload: dict):
-    version = payload.get("version")
-    if version not in ["v1", "v2"]:
-        raise HTTPException(status_code=400, detail="Invalid model version.")
-    mock_model.active_version = version
-    return {"message": f"Promoted model {version} to active successfully", "active_version": version}
-
-
-@app.post("/api/v1/models/rollback", summary="Rollback mô hình")
-def rollback_model():
-    mock_model.active_version = "v1"
-    return {"message": "Rolled back to model v1 successfully", "active_version": "v1"}

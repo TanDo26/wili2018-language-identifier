@@ -5,8 +5,15 @@ services:
       dockerfile: api/Dockerfile
     ports:
       - "8000:8000"
+    environment:
+      MODELS_DIR: /app/models
+      DB_PATH: /app/var/reports.db
+      # Endpoint admin trả 503 nếu không đặt ADMIN_TOKEN (đặt trong file .env cạnh file này)
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+      UNSURE_THRESHOLD: ${UNSURE_THRESHOLD:-0.8}
     volumes:
       - ./models:/app/models:ro
+      - api-data:/app/var   # dự đoán, báo cáo, version đang active: còn nguyên khi tạo lại container
 
   # web:   # D bổ sung khi chọn xong công nghệ cho web/
   #   build: ./web
@@ -14,3 +21,6 @@ services:
   #     - "3000:3000"
   #   depends_on:
   #     - api
+
+volumes:
+  api-data:

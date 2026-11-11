@@ -16,6 +16,10 @@ experiments/output/
 # Báo cáo xuất từ API (có văn bản người dùng nhập)
 exports/
 
+# Database của API: dự đoán và báo cáo có văn bản người dùng nhập
+database/
+*.db
+
 # Python
 __pycache__/
 *.pyc

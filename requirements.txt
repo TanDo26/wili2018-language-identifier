@@ -8,6 +8,8 @@ pandas==2.3.3
 numpy==2.3.5
 scipy==1.16.3
 joblib==1.5.2
+pyarrow
+datasets
 
 # EDA – vẽ hình
 matplotlib==3.10.6

@@ -1,77 +1,111 @@
-"""Pydantic schema – kiểm tra input/output của API theo openapi.yaml."""
+import enum
 from typing import List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, StringConstraints
+from typing_extensions import Annotated
+
+# Custom constrained string types for payload validation
+TextPayload = Annotated[
+    str, 
+    StringConstraints(strip_whitespace=True, min_length=20, max_length=5000)
+]
+BatchTextsPayload = Annotated[
+    List[TextPayload], 
+    Field(min_length=1, max_length=100)
+]
+
+class ReportReasonEnum(str, enum.Enum):
+    WRONG_LANGUAGE = "wrong_language"
+    MIXED_LANGUAGES = "mixed_languages"
+    NOT_A_LANGUAGE = "not_a_language"
+    OTHER = "other"
+
+class ReportStatusEnum(str, enum.Enum):
+    NEW = "new"
+    ACCEPTED = "accepted"
+    REJECTED = "rejected"
 
 
-# ==========================================
-# 1. Schemas cho Endpoint Dự Đoán (/predict)
-# ==========================================
+# -----------------------------------------------------------------------------
+# 1. Prediction Schemas
+# -----------------------------------------------------------------------------
 
 class PredictRequest(BaseModel):
-    text: str = Field(
-        ...,
-        description="Văn bản đầu vào (từ 20 đến 5000 ký tự)",
-        example="This is a sample text to test language classification."
-    )
+    text: TextPayload
 
 
 class Candidate(BaseModel):
-    code: str = Field(..., description="Mã ISO của ngôn ngữ", example="eng")
-    name: str = Field(..., description="Tên đầy đủ của ngôn ngữ", example="English")
-    confidence: float = Field(..., description="Xác suất độ tin cậy (% / 1.0)", example=0.95)
+    code: str = Field(..., description="ISO 639-3 language code", example="eng")
+    name: str = Field(..., description="Full language name", example="English")
+    confidence: float = Field(..., description="Confidence probability score", example=0.95)
 
 
 class PredictResponse(BaseModel):
-    language_code: str = Field(..., description="Mã ISO ngôn ngữ dự đoán chính", example="eng")
-    language_name: str = Field(..., description="Tên ngôn ngữ dự đoán chính", example="English")
-    confidence: float = Field(..., description="Độ tin cậy của class được chọn", example=0.95)
-    is_unsure: bool = Field(
-        ..., 
-        description="True nếu confidence < threshold hoặc text quá ngắn (< 140 ký tự)", 
-        example=False
-    )
-    explanation: List[str] = Field(
-        ..., 
-        description="Giải thích lý do mô hình phân loại và cảnh báo độ dài",
-        example=["Contains common English trigrams: 'thi', 'his', 'sam'"]
-    )
-    top_candidates: List[Candidate] = Field(..., description="Danh sách các ngôn ngữ ứng viên top đầu")
+    prediction_id: str = Field(..., description="Unique UUID for prediction tracing", example="3f6c2a9e-8b1a-4c2d-9e1a-2b3c4d5e6f7a")
+    model_version: str = Field(..., description="Active model version used for inference", example="v1")
+    language_code: str = Field(..., description="Primary predicted ISO language code", example="eng")
+    language_name: str = Field(..., description="Primary predicted language name", example="English")
+    confidence: float = Field(..., description="Top prediction confidence score", example=0.95)
+    is_unsure: bool = Field(..., description="Flag indicating low confidence below threshold", example=False)
+    explanation: List[str] = Field(..., description="Heuristic explanation messages")
+    top_candidates: List[Candidate] = Field(..., description="Top ranked language candidate predictions")
 
-
-# ===============================================
-# 2. Schemas cho Batch Processing (/predict-batch)
-# ===============================================
 
 class BatchPredictRequest(BaseModel):
-    texts: List[str] = Field(
-        ...,
-        description="Danh sách các đoạn văn bản cần xử lý hàng loạt",
-        example=["First sample text to test language.", "Le français est một ngôn ngữ tuyệt vời."]
-    )
+    texts: BatchTextsPayload
 
 
 class BatchPredictResponse(BaseModel):
     results: List[PredictResponse]
 
 
-# ==========================================
-# 3. Schema cho Báo Cáo Sai (/report)
-# ==========================================
+# -----------------------------------------------------------------------------
+# 2. Metadata & Auxiliary Schemas
+# -----------------------------------------------------------------------------
 
-class ReportRequest(BaseModel):
-    text: str = Field(..., description="Văn bản bị phân loại sai", example="Văn bản bị đoán sai")
-    predicted_language: str = Field(..., description="Ngôn ngữ mô hình đã đoán", example="vie")
-    correct_language: Optional[str] = Field(None, description="Ngôn ngữ đúng (nếu người dùng biết)", example="eng")
-    user_feedback: Optional[str] = Field(None, description="Ghi chú thêm từ người dùng", example="Không chắc chắn ngôn ngữ")
+class LanguageItem(BaseModel):
+    code: str = Field(..., example="eng")
+    name: str = Field(..., example="English")
 
-
-# ==========================================
-# 4. Schema cho Quản Lý Mô Hình (/models)
-# ==========================================
 
 class ModelVersion(BaseModel):
     version: str = Field(..., example="v1")
     algorithm: str = Field(..., example="Multinomial Naive Bayes")
-    is_active: bool = Field(..., example=True)
-    accuracy: float = Field(..., example=0.925)
-    macro_f1: float = Field(..., example=0.918)
+    status: str = Field(..., example="active", description="Status: active, candidate, archived")
+    created_at: Optional[str] = Field(None, example="2026-11-01T10:00:00Z")
+    accuracy: float = Field(..., example=0.944)
+    macro_f1: float = Field(..., example=0.949)
+
+
+class PromoteRequest(BaseModel):
+    version: str = Field(..., example="v2")
+
+
+# -----------------------------------------------------------------------------
+# 3. Reporting Schemas
+# -----------------------------------------------------------------------------
+
+class ReportRequest(BaseModel):
+    prediction_id: str = Field(..., example="3f6c2a9e-8b1a-4c2d-9e1a-2b3c4d5e6f7a")
+    reason: ReportReasonEnum = Field(..., example=ReportReasonEnum.WRONG_LANGUAGE)
+    suggested_language: Optional[str] = Field(None, example="eng")
+    comment: Optional[str] = Field(None, max_length=500, example="This text is clearly English.")
+
+
+class ReportUpdate(BaseModel):
+    status: ReportStatusEnum = Field(..., example=ReportStatusEnum.ACCEPTED)
+    verified_language: Optional[str] = Field(None, example="eng")
+
+
+class ReportItem(BaseModel):
+    report_id: int = Field(..., example=1)
+    prediction_id: str = Field(..., example="3f6c2a9e-8b1a-4c2d-9e1a-2b3c4d5e6f7a")
+    created_at: str = Field(..., example="2026-11-11 12:00:00")
+    reason: str = Field(..., example="wrong_language")
+    suggested_language: Optional[str] = Field(None, example="eng")
+    comment: Optional[str] = Field(None, example="This is English")
+    text: str = Field(..., example="Sample text content")
+    predicted_language: str = Field(..., example="vie")
+    confidence: float = Field(..., example=0.75)
+    model_version: str = Field(..., example="v1")
+    status: str = Field(..., example="new")
+    verified_language: Optional[str] = Field(None, example="eng")

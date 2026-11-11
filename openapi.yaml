@@ -1,20 +1,775 @@
-openapi: 3.0.3
+# Sinh tự động từ api/main.py và api/schemas.py, không sửa tay: python -m api.export_openapi
+openapi: "3.1.0"
 info:
-  title: HTTM API
-  version: 0.1.0
-  description: Thỏa thuận API giữa C (backend) và D (web).
+  title: "HTTM API - Language Identification System"
+  description: "Thỏa thuận API giữa C (backend) và D (frontend). Mọi lỗi trả dạng {\"detail\": \"...\"}."
+  version: "0.2.0"
 paths:
   /health:
     get:
-      summary: Kiểm tra API còn hoạt động
+      summary: "Kiểm tra API còn hoạt động"
+      operationId: health_health_get
       responses:
         "200":
-          description: OK
+          description: "Successful Response"
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: ok
+                "$ref": "#/components/schemas/HealthResponse"
+  /api/v1/languages:
+    get:
+      summary: "Danh sách ngôn ngữ mô hình nhận diện"
+      operationId: list_languages_api_v1_languages_get
+      responses:
+        "200":
+          description: "Successful Response"
+          content:
+            application/json:
+              schema:
+                items:
+                  "$ref": "#/components/schemas/LanguageItem"
+                type: array
+                title: "Response List Languages Api V1 Languages Get"
+  /api/v1/predict:
+    post:
+      summary: "Dự đoán ngôn ngữ cho 1 đoạn văn bản"
+      operationId: predict_api_v1_predict_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/PredictRequest"
+        required: true
+      responses:
+        "200":
+          description: "Successful Response"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/PredictResponse"
+        "400":
+          description: "Input không hợp lệ"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "413":
+          description: "Văn bản dài hơn 5.000 ký tự hoặc batch nhiều hơn 100 đoạn"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "503":
+          description: "Chưa có mô hình (predict) hoặc server chưa đặt ADMIN_TOKEN (endpoint admin)"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+  /api/v1/predict-batch:
+    post:
+      summary: "Dự đoán ngôn ngữ cho tối đa 100 đoạn văn bản"
+      operationId: predict_batch_api_v1_predict_batch_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/BatchPredictRequest"
+        required: true
+      responses:
+        "200":
+          description: "Successful Response"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BatchPredictResponse"
+        "400":
+          description: "Input không hợp lệ"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "413":
+          description: "Văn bản dài hơn 5.000 ký tự hoặc batch nhiều hơn 100 đoạn"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "503":
+          description: "Chưa có mô hình (predict) hoặc server chưa đặt ADMIN_TOKEN (endpoint admin)"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+  /api/v1/report:
+    post:
+      summary: "Báo cáo một dự đoán sai"
+      operationId: create_report_api_v1_report_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ReportRequest"
+        required: true
+      responses:
+        "201":
+          description: "Successful Response"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ReportCreated"
+        "400":
+          description: "Input không hợp lệ"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Không tìm thấy"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+  /api/v1/reports:
+    get:
+      summary: "Danh sách báo cáo (admin)"
+      operationId: list_reports_api_v1_reports_get
+      security:
+        - APIKeyHeader: []
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - "$ref": "#/components/schemas/ReportStatusEnum"
+              - type: "null"
+            title: Status
+        - name: model_version
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: "null"
+            title: "Model Version"
+      responses:
+        "200":
+          description: "Successful Response"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/ReportItem"
+                title: "Response List Reports Api V1 Reports Get"
+        "400":
+          description: "Input không hợp lệ"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Thiếu hoặc sai header X-Admin-Token"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "503":
+          description: "Chưa có mô hình (predict) hoặc server chưa đặt ADMIN_TOKEN (endpoint admin)"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+  "/api/v1/reports/{report_id}":
+    patch:
+      summary: "Duyệt một báo cáo (admin)"
+      operationId: update_report_api_v1_reports__report_id__patch
+      security:
+        - APIKeyHeader: []
+      parameters:
+        - name: report_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            title: "Report Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ReportUpdate"
+      responses:
+        "200":
+          description: "Successful Response"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageResponse"
+        "400":
+          description: "Input không hợp lệ"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Thiếu hoặc sai header X-Admin-Token"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Không tìm thấy"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "503":
+          description: "Chưa có mô hình (predict) hoặc server chưa đặt ADMIN_TOKEN (endpoint admin)"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+  /api/v1/models:
+    get:
+      summary: "Danh sách version mô hình"
+      operationId: list_models_api_v1_models_get
+      responses:
+        "200":
+          description: "Successful Response"
+          content:
+            application/json:
+              schema:
+                items:
+                  "$ref": "#/components/schemas/ModelVersion"
+                type: array
+                title: "Response List Models Api V1 Models Get"
+  /api/v1/models/promote:
+    post:
+      summary: "Đưa một version lên chạy (admin)"
+      operationId: promote_model_api_v1_models_promote_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/PromoteRequest"
+        required: true
+      responses:
+        "200":
+          description: "Successful Response"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ModelActionResponse"
+        "400":
+          description: "Input không hợp lệ"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Thiếu hoặc sai header X-Admin-Token"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Không tìm thấy"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "409":
+          description: "Xung đột trạng thái version"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Không nạp được mô hình"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "503":
+          description: "Chưa có mô hình (predict) hoặc server chưa đặt ADMIN_TOKEN (endpoint admin)"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+      security:
+        - APIKeyHeader: []
+  /api/v1/models/rollback:
+    post:
+      summary: "Quay về version chạy trước đó (admin)"
+      operationId: rollback_model_api_v1_models_rollback_post
+      responses:
+        "200":
+          description: "Successful Response"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ModelActionResponse"
+        "401":
+          description: "Thiếu hoặc sai header X-Admin-Token"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Không tìm thấy"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "409":
+          description: "Xung đột trạng thái version"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Không nạp được mô hình"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        "503":
+          description: "Chưa có mô hình (predict) hoặc server chưa đặt ADMIN_TOKEN (endpoint admin)"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+      security:
+        - APIKeyHeader: []
+components:
+  schemas:
+    BatchPredictRequest:
+      properties:
+        texts:
+          items:
+            type: string
+            maxLength: 5000
+            minLength: 20
+          type: array
+          maxItems: 100
+          minItems: 1
+          title: Texts
+      type: object
+      required:
+        - texts
+      title: BatchPredictRequest
+    BatchPredictResponse:
+      properties:
+        results:
+          items:
+            "$ref": "#/components/schemas/PredictResponse"
+          type: array
+          title: Results
+      type: object
+      required:
+        - results
+      title: BatchPredictResponse
+    Candidate:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: "Mã ngôn ngữ WiLI-2018"
+          examples:
+            - eng
+        name:
+          type: string
+          title: Name
+          description: "Tên ngôn ngữ"
+          examples:
+            - English
+        confidence:
+          type: number
+          title: Confidence
+          description: "Xác suất của ngôn ngữ này"
+          examples:
+            - 0.95
+      type: object
+      required:
+        - code
+        - name
+        - confidence
+      title: Candidate
+    ErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          examples:
+            - "text: String should have at least 20 characters"
+      type: object
+      required:
+        - detail
+      title: ErrorResponse
+    HealthResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+          examples:
+            - ok
+        model_loaded:
+          type: boolean
+          title: "Model Loaded"
+          examples:
+            - true
+        active_version:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: "Active Version"
+          examples:
+            - v1
+      type: object
+      required:
+        - status
+        - model_loaded
+      title: HealthResponse
+    LanguageItem:
+      properties:
+        code:
+          type: string
+          title: Code
+          examples:
+            - eng
+        name:
+          type: string
+          title: Name
+          examples:
+            - English
+      type: object
+      required:
+        - code
+        - name
+      title: LanguageItem
+    MessageResponse:
+      properties:
+        message:
+          type: string
+          title: Message
+      type: object
+      required:
+        - message
+      title: MessageResponse
+    ModelActionResponse:
+      properties:
+        message:
+          type: string
+          title: Message
+        active_version:
+          type: string
+          title: "Active Version"
+          examples:
+            - v2
+      type: object
+      required:
+        - message
+        - active_version
+      title: ModelActionResponse
+    ModelVersion:
+      properties:
+        version:
+          type: string
+          title: Version
+          examples:
+            - v1
+        algorithm:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Algorithm
+          description: "Từ meta.json"
+          examples:
+            - naive_bayes
+        status:
+          type: string
+          enum:
+            - active
+            - candidate
+            - archived
+          title: Status
+          description: "active: đang chạy; archived: từng active; candidate: chưa từng active"
+        created_at:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: "Created At"
+          description: "Từ meta.json"
+          examples:
+            - "2026-11-01T10:00:00+00:00"
+        accuracy:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Accuracy
+          description: "Từ metrics.json (tập test)"
+          examples:
+            - 0.948
+        macro_f1:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: "Macro F1"
+          description: "Từ metrics.json (tập test)"
+          examples:
+            - 0.95
+      type: object
+      required:
+        - version
+        - status
+      title: ModelVersion
+    PredictRequest:
+      properties:
+        text:
+          type: string
+          maxLength: 5000
+          minLength: 20
+          title: Text
+          examples:
+            - "Xin chào, hôm nay trời đẹp quá nên chúng ta đi dạo nhé."
+      type: object
+      required:
+        - text
+      title: PredictRequest
+    PredictResponse:
+      properties:
+        prediction_id:
+          type: string
+          title: "Prediction Id"
+          description: "UUID của lần dự đoán, dùng khi gửi /report"
+          examples:
+            - "3f6c2a9e-8b1a-4c2d-9e1a-2b3c4d5e6f7a"
+        model_version:
+          type: string
+          title: "Model Version"
+          description: "Version mô hình đã dự đoán"
+          examples:
+            - v1
+        language_code:
+          type: string
+          title: "Language Code"
+          description: "Mã ngôn ngữ dự đoán"
+          examples:
+            - eng
+        language_name:
+          type: string
+          title: "Language Name"
+          description: "Tên ngôn ngữ dự đoán"
+          examples:
+            - English
+        confidence:
+          type: number
+          title: Confidence
+          description: "Xác suất của ngôn ngữ dự đoán"
+          examples:
+            - 0.95
+        is_unsure:
+          type: boolean
+          title: "Is Unsure"
+          description: "True khi confidence thấp hơn ngưỡng UNSURE_THRESHOLD"
+          examples:
+            - false
+        explanation:
+          items:
+            type: string
+          type: array
+          title: Explanation
+          description: "Các cảnh báo tính từ kết quả mô hình"
+        top_candidates:
+          items:
+            "$ref": "#/components/schemas/Candidate"
+          type: array
+          title: "Top Candidates"
+          description: "Tối đa 3 ngôn ngữ có xác suất cao nhất"
+      type: object
+      required:
+        - prediction_id
+        - model_version
+        - language_code
+        - language_name
+        - confidence
+        - is_unsure
+        - explanation
+        - top_candidates
+      title: PredictResponse
+    PromoteRequest:
+      properties:
+        version:
+          type: string
+          title: Version
+          examples:
+            - v2
+      type: object
+      required:
+        - version
+      title: PromoteRequest
+    ReportCreated:
+      properties:
+        message:
+          type: string
+          title: Message
+        report_id:
+          type: integer
+          title: "Report Id"
+          examples:
+            - 1
+      type: object
+      required:
+        - message
+        - report_id
+      title: ReportCreated
+    ReportItem:
+      properties:
+        report_id:
+          type: integer
+          title: "Report Id"
+          examples:
+            - 1
+        prediction_id:
+          type: string
+          title: "Prediction Id"
+          examples:
+            - "3f6c2a9e-8b1a-4c2d-9e1a-2b3c4d5e6f7a"
+        created_at:
+          type: string
+          title: "Created At"
+          description: "Giờ UTC"
+          examples:
+            - "2026-11-11 12:00:00"
+        reason:
+          "$ref": "#/components/schemas/ReportReasonEnum"
+          examples:
+            - wrong_language
+        suggested_language:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: "Suggested Language"
+          examples:
+            - eng
+        comment:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Comment
+          examples:
+            - "Đoạn này là tiếng Anh."
+        text:
+          type: string
+          title: Text
+          examples:
+            - "Sample text content"
+        predicted_language:
+          type: string
+          title: "Predicted Language"
+          examples:
+            - vie
+        confidence:
+          type: number
+          title: Confidence
+          examples:
+            - 0.75
+        model_version:
+          type: string
+          title: "Model Version"
+          examples:
+            - v1
+        status:
+          "$ref": "#/components/schemas/ReportStatusEnum"
+          examples:
+            - new
+        verified_language:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: "Verified Language"
+          examples:
+            - eng
+      type: object
+      required:
+        - report_id
+        - prediction_id
+        - created_at
+        - reason
+        - text
+        - predicted_language
+        - confidence
+        - model_version
+        - status
+      title: ReportItem
+    ReportReasonEnum:
+      type: string
+      enum:
+        - wrong_language
+        - mixed_languages
+        - not_a_language
+        - other
+      title: ReportReasonEnum
+    ReportRequest:
+      properties:
+        prediction_id:
+          type: string
+          title: "Prediction Id"
+          examples:
+            - "3f6c2a9e-8b1a-4c2d-9e1a-2b3c4d5e6f7a"
+        reason:
+          "$ref": "#/components/schemas/ReportReasonEnum"
+          examples:
+            - wrong_language
+        suggested_language:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: "Suggested Language"
+          description: "Một mã trong GET /api/v1/languages"
+          examples:
+            - eng
+        comment:
+          anyOf:
+            - type: string
+              maxLength: 500
+            - type: "null"
+          title: Comment
+          examples:
+            - "Đoạn này là tiếng Anh."
+      type: object
+      required:
+        - prediction_id
+        - reason
+      title: ReportRequest
+    ReportStatusEnum:
+      type: string
+      enum:
+        - new
+        - accepted
+        - rejected
+      title: ReportStatusEnum
+    ReportUpdate:
+      properties:
+        status:
+          "$ref": "#/components/schemas/ReportStatusEnum"
+          examples:
+            - accepted
+        verified_language:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: "Verified Language"
+          description: "Bắt buộc khi status là accepted"
+          examples:
+            - eng
+      type: object
+      required:
+        - status
+      title: ReportUpdate
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: X-Admin-Token

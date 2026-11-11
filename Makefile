@@ -2,7 +2,7 @@
 PYTHON ?= python
 ARGS ?=
 
-.PHONY: data eda experiments retrain test
+.PHONY: data eda experiments retrain openapi test
 
 # Tải -> làm sạch -> chia -> kiểm tra rò rỉ -> cắt ngắn -> thống kê
 data:
@@ -19,6 +19,10 @@ experiments:
 # make retrain ARGS="--feedback exports/accepted_reports.csv"  (file tạo bằng python -m data.export_reports)
 retrain:
 	$(PYTHON) -m scripts.retrain $(ARGS)
+
+# Ghi lại openapi.yaml sau khi sửa endpoint / schema trong api/
+openapi:
+	$(PYTHON) -m api.export_openapi
 
 test:
 	$(PYTHON) -m pytest data/tests experiments/tests scripts/tests api/tests

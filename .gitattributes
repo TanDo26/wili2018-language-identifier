@@ -7,6 +7,7 @@ data/reports/*.json         text eol=lf
 data/reports/*.md           text eol=lf
 experiments/results/*.json  text eol=lf
 experiments/results/*.md    text eol=lf
+openapi.yaml                text eol=lf
 
 # make không chạy đúng nếu dòng lệnh kết thúc bằng CR
 Makefile                    text eol=lf

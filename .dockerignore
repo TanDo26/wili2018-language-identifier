@@ -1,0 +1,21 @@
+# Build context chỉ cần requirements.txt, api/ và vài file trong data/ (xem api/Dockerfile)
+.git
+**/__pycache__
+**/*.pyc
+.venv
+venv
+.env
+
+# models/ được mount lúc chạy; dữ liệu, kết quả, DB không đưa vào image
+models
+data/raw
+data/interim
+data/processed/*
+!data/processed/labels.csv
+experiments
+exports
+database
+*.db
+
+web
+docs

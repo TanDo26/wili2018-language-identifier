@@ -42,9 +42,14 @@ function predictErrorForStatus(status) {
 /** Messages for POST /api/v1/report, shown inside the report dialog. */
 function reportErrorForStatus(status) {
   switch (status) {
+    case 404: // RP-4: the prediction_id is unknown or has expired
+      return new ApiError(
+        'This prediction session has expired or was not found. Please run a new identification and try again.',
+        { status },
+      );
     case 400:
     case 422:
-      return new ApiError('The report was rejected. Check the correct language and try again.', { status });
+      return new ApiError('The report was rejected. Check the selected options and try again.', { status });
     case 429:
       return new ApiError('Too many requests. Wait a moment and try again.', { status });
     case 503:
@@ -75,7 +80,7 @@ async function predictLanguage(text) {
   return res.json(); // PredictResponse
 }
 
-/** payload = ReportRequest; resolves with { message, report_id } on 201. */
+/** payload = { prediction_id, reason, suggested_language, comment? }; resolves on 201. */
 async function submitReport(payload) {
   const res = await postJson('/api/v1/report', payload);
   if (!res.ok) throw reportErrorForStatus(res.status);

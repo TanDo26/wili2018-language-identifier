@@ -73,7 +73,7 @@ export default function ResultCard({ result, onOpenReport }) {
 
   if (!result) return null;
 
-  const { language_code, language_name, confidence, is_unsure, top_candidates = [] } = result;
+  const { language_code, language_name, confidence, is_unsure, model_version, prediction_id, top_candidates = [] } = result;
 
   const explanation = (result.explanation ?? []).filter(
     (line) => typeof line === 'string' && line.trim().length > 0,
@@ -101,6 +101,11 @@ export default function ResultCard({ result, onOpenReport }) {
           {language_code}
         </span>
         <span className="text-sm font-medium text-ink">{formatPercent(confidence)} confidence</span>
+        {model_version && (
+          <span className="rounded bg-subtle px-2 py-0.5 font-mono text-xs text-muted">
+            Model: {model_version}
+          </span>
+        )}
       </div>
 
       <div
@@ -185,15 +190,18 @@ export default function ResultCard({ result, onOpenReport }) {
         </>
       )}
 
-      <div className="mt-4 border-t border-border pt-1">
-        <button
-          type="button"
-          onClick={onOpenReport}
-          className="min-h-[44px] min-w-[44px] rounded-md text-sm text-muted underline underline-offset-4 transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal/30"
-        >
-          Report incorrect result
-        </button>
-      </div>
+      {/* A report is tied to a stored prediction, so it needs the prediction_id from the API. */}
+      {prediction_id && (
+        <div className="mt-4 border-t border-border pt-1">
+          <button
+            type="button"
+            onClick={onOpenReport}
+            className="min-h-[44px] min-w-[44px] rounded-md text-sm text-muted underline underline-offset-4 transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal/30"
+          >
+            Report incorrect result
+          </button>
+        </div>
+      )}
     </section>
   );
 }

@@ -7,17 +7,25 @@ export const MAX_CHARS = 5000;
 const fmt = (n) => n.toLocaleString('en-US');
 
 /**
- * Validation status of the current text.
+ * Length the way the API counts it: Python's len(text.strip()), i.e. trimmed Unicode code points.
+ * String.length counts UTF-16 units, so an emoji would count twice; spreading the string counts
+ * code points. (JS trim() and Python strip() differ only for a few exotic whitespace characters.)
+ */
+export const countChars = (value) => [...value.trim()].length;
+
+/**
+ * Validation status of the current text (length = trimmed code points, see countChars).
  *  empty      – nothing typed yet (no message, submit disabled)
  *  emptyError – field was touched and left empty (EU-04, red text)
  *  tooShort   – 1..19 characters (EU-03, amber warning, submit disabled)
  *  valid      – 20..5,000 characters
  *  tooLong    – more than 5,000 characters (EU-04, red border + message, submit disabled)
  */
-function getStatus(value, touched) {
-  if (value.length > MAX_CHARS) return 'tooLong';
-  if (value.trim().length === 0) return touched ? 'emptyError' : 'empty';
-  if (value.length < MIN_CHARS) return 'tooShort';
+export function getStatus(value, touched) {
+  const count = countChars(value);
+  if (count > MAX_CHARS) return 'tooLong';
+  if (count === 0) return touched ? 'emptyError' : 'empty';
+  if (count < MIN_CHARS) return 'tooShort';
   return 'valid';
 }
 
@@ -37,6 +45,7 @@ export default function TextInputCard({ value, onChange, onSubmit, isLoading = f
   const counterId = `${uid}-counter`;
   const messageId = `${uid}-message`;
 
+  const count = countChars(value);
   const status = getStatus(value, touched);
   const isError = status === 'emptyError' || status === 'tooLong';
   const canSubmit = status === 'valid' && !isLoading;
@@ -82,7 +91,7 @@ export default function TextInputCard({ value, onChange, onSubmit, isLoading = f
         id={counterId}
         className={`mt-2 font-mono text-[13px] ${status === 'tooLong' ? 'font-medium text-red' : 'text-muted'}`}
       >
-        {fmt(value.length)} / {fmt(MAX_CHARS)} characters
+        {fmt(count)} / {fmt(MAX_CHARS)} characters
       </p>
 
       <div id={hasMessage ? messageId : undefined} aria-live="polite">

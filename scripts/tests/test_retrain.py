@@ -44,10 +44,21 @@ def test_algorithm_reaches_train_and_meta(tmp_path):
         main([*FAKE, "--models-dir", str(tmp_path), "--algorithm", "no_such_model"])
 
 
+def test_tune_reaches_train_and_hyperparameters_reach_meta(tmp_path):
+    default = main([*FAKE, "--models-dir", str(tmp_path)])
+    tuned = main([*FAKE, "--models-dir", str(tmp_path), "--tune"])
+
+    for version, tune in ((default, False), (tuned, True)):
+        meta = json.loads((version / "meta.json").read_text(encoding="utf-8"))
+        assert meta["tune"] is tune
+        assert meta["hyperparameters"] == {"alpha": 0.01}
+        assert json.loads((version / "train_args.json").read_text(encoding="utf-8"))["tune"] is tune
+
+
 def test_failed_train_leaves_no_version(tmp_path):
-    # ml.train hiện vẫn là stub của B (raise NotImplementedError)
     with pytest.raises(SystemExit) as exc:
-        main(["--skip-data", "--models-dir", str(tmp_path), "--eval-module", "scripts.tests.fake_evaluate"])
+        main(["--skip-data", "--models-dir", str(tmp_path), "--train-module", "scripts.tests.fake_train_unimplemented",
+              "--eval-module", "scripts.tests.fake_evaluate"])
     assert "chưa được hiện thực" in str(exc.value)
     assert list(tmp_path.iterdir()) == []
 

@@ -25,4 +25,4 @@ openapi:
 	$(PYTHON) -m api.export_openapi
 
 test:
-	$(PYTHON) -m pytest data/tests experiments/tests scripts/tests api/tests
+	$(PYTHON) -m pytest data/tests experiments/tests scripts/tests ml/tests api/tests

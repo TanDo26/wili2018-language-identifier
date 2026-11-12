@@ -25,11 +25,15 @@ pip install -r requirements.txt
 ## Chạy
 
 ```bash
+# Dữ liệu -> train -> đánh giá -> models/vN/ (Windows không có make: python -m scripts.retrain)
+make retrain
+make retrain ARGS="--algorithm svm"      # baseline | naive_bayes | svm, xem ml/README.md
+
 # Chạy API local
 uvicorn api.main:app --reload
 
-# Chạy test
-pytest api/tests
+# Chạy test (Windows: python -m pytest data/tests experiments/tests scripts/tests ml/tests api/tests)
+make test
 
 # Chạy bằng Docker
 docker compose up --build

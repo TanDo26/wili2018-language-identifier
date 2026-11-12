@@ -4,6 +4,7 @@
     python -m scripts.retrain --algorithm svm --features char_wb_1_3_100k --no-augment
     python -m scripts.retrain --feedback exports/accepted_reports.csv   # file từ data.export_reports
     python -m scripts.retrain --skip-data               # dữ liệu đã có, chỉ train lại
+    python -m scripts.retrain --skip-data --tune        # chọn lại tham số mô hình trên val (chậm hơn)
 
 Các bước:
   1. Dữ liệu: data.pipeline (dùng lại data/splits/split_ids.csv nên luôn cùng một cách chia),
@@ -18,12 +19,14 @@ Các bước:
 Interface ml.train / ml.evaluate cần hỗ trợ (thỏa thuận A – B):
 
   python -m ml.train --data-dir data/processed --out-dir <thư mục> --features <preset>
-                     --algorithm <baseline|naive_bayes|svm> [--augment] [--feedback]
+                     --algorithm <baseline|naive_bayes|svm> [--augment] [--feedback] [--tune]
       -> <thư mục>/model.joblib: sklearn Pipeline (vectorizer từ ml.features + bộ phân loại),
          có predict / predict_proba trên danh sách chuỗi đã chuẩn hóa.
+         <thư mục>/train_info.json (tùy chọn): {"hyperparameter", "value", ...} được chép vào meta.json.
          --algorithm: chọn mô hình trong ml/baseline.py, ml/naive_bayes.py, ml/svm.py
          --augment  : học thêm data/processed/train_crops.csv
          --feedback : học thêm data/processed/train_feedback.csv
+         --tune     : thử các giá trị tham số của mô hình, chọn theo val
   python -m ml.evaluate --model-dir <thư mục> --data-dir data/processed
       -> <thư mục>/metrics.json, tối thiểu {"accuracy", "macro_f1"} trên test.csv; nên có thêm
          "by_length" trên test_short.csv và "no_overlap" ({"accuracy", "macro_f1"}) trên các đoạn
@@ -111,7 +114,16 @@ def data_version() -> dict | None:
     }
 
 
-def build_meta(version: str, args, metrics: dict) -> dict:
+def hyperparameters(model_dir: Path) -> dict | None:
+    """{tên: giá trị} từ train_info.json của ml.train, None nếu không có."""
+    path = model_dir / "train_info.json"
+    if not path.exists():
+        return None
+    info = read_json(path)
+    return {info["hyperparameter"]: info.get("value")} if info.get("hyperparameter") else {}
+
+
+def build_meta(version: str, args, metrics: dict, model_dir: Path) -> dict:
     params = preset_params(args.features)
     feedback = None
     if args.feedback:
@@ -125,6 +137,8 @@ def build_meta(version: str, args, metrics: dict) -> dict:
         "algorithm": args.algorithm,
         "features": {"preset": args.features,
                      **{k: (list(v) if isinstance(v, tuple) else v) for k, v in params.items() if k != "dtype"}},
+        "hyperparameters": hyperparameters(model_dir),
+        "tune": args.tune,
         "augment": args.augment,
         "feedback": feedback,
         "data_version": data_version(),
@@ -152,7 +166,8 @@ def retrain(args) -> Path:
         run_step("train", [args.train_module, "--data-dir", rel(PROCESSED_DIR), "--out-dir", rel(tmp),
                            "--features", args.features, "--algorithm", args.algorithm,
                            *(["--augment"] if args.augment else []),
-                           *(["--feedback"] if args.feedback else [])])
+                           *(["--feedback"] if args.feedback else []),
+                           *(["--tune"] if args.tune else [])])
         run_step("đánh giá", [args.eval_module, "--model-dir", rel(tmp), "--data-dir", rel(PROCESSED_DIR)])
 
         missing = [f for f in REQUIRED_FILES if not (tmp / f).exists()]
@@ -163,7 +178,7 @@ def retrain(args) -> Path:
         if missing:
             raise RetrainError(f"metrics.json thiếu {missing}")
 
-        write_json(build_meta(version, args, metrics), tmp / "meta.json")
+        write_json(build_meta(version, args, metrics, tmp), tmp / "meta.json")
         final = args.models_dir / version
         tmp.rename(final)
     except BaseException:
@@ -181,6 +196,7 @@ def main(argv=None) -> Path:
     parser.add_argument("--augment", action=argparse.BooleanOptionalAction, default=True,
                         help="học thêm các đoạn cắt ngắn (mặc định: có)")
     parser.add_argument("--feedback", type=Path, help="CSV báo cáo đã duyệt xuất từ API")
+    parser.add_argument("--tune", action="store_true", help="chọn tham số mô hình trên val (chậm hơn)")
     parser.add_argument("--skip-data", action="store_true", help="bỏ qua bước xử lý dữ liệu")
     parser.add_argument("--regenerate-split", action="store_true", help="chia lại split (ghi đè split_ids.csv)")
     parser.add_argument("--models-dir", type=Path, default=MODELS_DIR)
@@ -199,7 +215,7 @@ def main(argv=None) -> Path:
     metrics = read_json(final / "meta.json")["metrics"]
     print(f"\nĐã tạo {rel(final)} (candidate): accuracy {metrics['accuracy']:.2%}, "
           f"macro-F1 {metrics['macro_f1']:.2%}")
-    print(f'Đưa lên API: POST /api/v1/models/promote {{"version": "{final.name}"}}')
+    print(f'Đưa lên API: POST /api/v1/models/promote {{"version": "{final.name}"}} (header X-Admin-Token)')
     return final
 
 

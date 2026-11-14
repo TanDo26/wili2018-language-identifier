@@ -4,7 +4,7 @@ const fmt = (n) => n.toLocaleString('en-US');
 
 /** Three headline numbers. Stacked on phones (40px figures do not fit three-across at 390px). */
 export default function MetricCards() {
-  const splitSummary = DATASET_STATS.splits.map((s) => `${s.short} (${s.size / 1000}k)`).join(', ');
+  const splitSummary = DATASET_STATS.splits.map((s) => `${s.short} (${(s.size / 1000).toFixed(1)}k)`).join(', ');
 
   const metrics = [
     { value: fmt(DATASET_STATS.languages), label: 'languages' },

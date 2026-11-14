@@ -1,38 +1,38 @@
-import { useEffect, useRef, useState } from 'react';
-import {
-  AlertTriangle,
-  CheckCircle2,
-  FileCheck2,
-  Loader2,
-  ShieldCheck,
-  XCircle,
-} from 'lucide-react';
-import { DATASET_STATS, TOTAL_PARAGRAPHS } from '../data/sampleDataset.js';
+import { AlertTriangle, CheckCircle2, FileCheck2, ShieldCheck, XCircle } from 'lucide-react';
+import { DATASET_STATS, TOTAL_PARAGRAPHS, stats } from '../data/sampleDataset.js';
 
-const SEED = 42;
-const AUDIT_DURATION_MS = 1600; // simulated audit time
-const NEAR_DUPLICATE_THRESHOLD = 0.9;
+const { leakage, cleaning, split } = stats;
+const PAIR_NAMES = { 'train-test': 'Train ∩ Test', 'train-val': 'Train ∩ Validation', 'val-test': 'Validation ∩ Test' };
+const fmt = (n) => n.toLocaleString('en-US');
 
-// Mock audit results (DS-02). Replace with an API response once an audit endpoint exists.
-// kind 'exact' = SHA-256 string overlap between two splits (must be 0); 'near' = review-only check.
+// From data/processed/stats.json (python -m data.check_leakage). kind 'exact' must be 0: same id,
+// identical text, or identical after dropping digits, punctuation, spaces and case.
+// kind 'near' is report-only: test paragraphs sharing a 40-char passage with train (bot-made articles).
 const AUDIT_CHECKS = [
-  { id: 'train-test', kind: 'exact', name: 'Train ∩ Test Overlap', count: 0 },
-  { id: 'train-val', kind: 'exact', name: 'Train ∩ Validation Overlap', count: 0 },
-  { id: 'val-test', kind: 'exact', name: 'Validation ∩ Test Overlap', count: 0 },
-  { id: 'near-dup', kind: 'near', name: `Near-duplicate Jaccard similarity (>${NEAR_DUPLICATE_THRESHOLD.toFixed(2)})`, count: 14 },
+  ...Object.entries(PAIR_NAMES).map(([pair, name]) => {
+    const c = leakage.pairs[pair];
+    return { id: pair, kind: 'exact', name: `${name} Overlap`, count: c.id + c.exact + c.near };
+  }),
+  {
+    id: 'partial',
+    kind: 'near',
+    name: `Test text shared with train (≥ ${leakage.partial_overlap.window_chars} chars)`,
+    count: leakage.partial_overlap.test.any,
+  },
 ];
 
-// Features agreed for the TF-IDF model (the team's `features.py`).
+// shortcut: copied from DEFAULT_PRESET in ml/features.py; read meta.features of GET /api/v1/models/{v} if presets change.
 const TFIDF_CONFIG = [
-  ['analyzer', "'char'"],
-  ['ngram_range', '(1, 3)'],
+  ['preset', "'char_wb_1_4_100k'"],
+  ['analyzer', "'char_wb'"],
+  ['ngram_range', '(1, 4)'],
+  ['max_features', '100000'],
+  ['lowercase', 'true'],
   ['sublinear_tf', 'true'],
-  ['min_df', '2'],
-  ['max_features', '50000'],
 ];
 const SAMPLE_NGRAMS = [' vi', 'ngư', 'nam', 'the', 'ing'];
 
-const fmtK = (n) => `${n / 1000}k`;
+const fmtK = (n) => `${(n / 1000).toFixed(1)}k`;
 const pctOf = (part, whole) => +((part / whole) * 100).toFixed(1);
 
 function statusOf(check) {
@@ -41,8 +41,9 @@ function statusOf(check) {
 }
 
 function resultText(check) {
-  if (check.kind === 'near') return `${check.count} pairs flagged for review`;
-  const base = `${check.count} duplicate samples`;
+  if (check.kind === 'near')
+    return `${fmt(check.count)} test paragraphs (${pctOf(check.count, DATASET_STATS.splits[2].size)}%); scored separately as no_overlap`;
+  const base = `${fmt(check.count)} shared samples`;
   return check.id === 'train-test' && check.count === 0 ? `${base} (100% disjoint)` : base;
 }
 
@@ -57,10 +58,6 @@ const STATUS_UI = {
   failed: { label: 'FAILED', Icon: XCircle, wrap: 'text-red', icon: 'text-red' },
 };
 
-function Spinner({ className = 'h-4 w-4' }) {
-  return <Loader2 className={`${className} animate-spin motion-reduce:animate-none`} aria-hidden="true" />;
-}
-
 function Card({ title, id, children }) {
   return (
     <section aria-labelledby={id} className="rounded-xl border border-border bg-surface p-5">
@@ -74,62 +71,29 @@ function Card({ title, id, children }) {
 
 /**
  * Data Pipeline & Leakage Verification (DS-02, FR7, NFR2).
- * Shows the agreed preprocessing / split / feature configuration and a leakage audit.
- * The audit is simulated: figures come from the constants above, not from the pipeline.
+ * Shows the preprocessing / split / feature configuration and the leakage audit of the last
+ * data pipeline run (data/processed/stats.json, bundled at build time).
  */
 export default function PipelineLeakage() {
-  const [running, setRunning] = useState(false);
-  const [lastRun, setLastRun] = useState(null);
-  const timer = useRef(null);
-
-  useEffect(() => () => clearTimeout(timer.current), []);
-
-  const runAudit = () => {
-    if (running) return;
-    setRunning(true);
-    timer.current = setTimeout(() => {
-      setRunning(false);
-      setLastRun(new Date());
-    }, AUDIT_DURATION_MS);
-  };
-
   // ---- derived values
   const exactChecks = AUDIT_CHECKS.filter((c) => c.kind === 'exact');
   const clean = exactChecks.every((c) => c.count === 0);
   const trainTest = AUDIT_CHECKS.find((c) => c.id === 'train-test');
   const testSize = DATASET_STATS.splits.find((s) => s.id === 'test').size;
   const overlapPct = pctOf(trainTest.count, testSize).toFixed(1);
-  const passedCount = AUDIT_CHECKS.filter((c) => statusOf(c) === 'passed').length;
-  const acceptableCount = AUDIT_CHECKS.filter((c) => statusOf(c) === 'acceptable').length;
-
-  let liveText = 'Showing results from the last pipeline run.';
-  if (running) liveText = 'Running leakage audit…';
-  else if (lastRun)
-    liveText = `Leakage audit finished at ${lastRun.toLocaleTimeString('en-GB')}: ${passedCount} passed, ${acceptableCount} acceptable.`;
-
   return (
     <div className="space-y-6">
-      {/* ------------------------------------------------- header + trigger */}
+      {/* ------------------------------------------------------- header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <h2 className="text-2xl font-bold text-ink">Data Pipeline &amp; Leakage Verification</h2>
           <p className="mt-1 text-sm text-muted">
             Preprocessing, train/validation/test split configuration, and data leakage audit.
           </p>
-          <p role="status" aria-live="polite" className="mt-2 text-xs text-muted">
-            {liveText}
+          <p className="mt-2 text-xs text-muted">
+            Results of the last <span className="font-mono">python -m data.pipeline</span> run.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={runAudit}
-          disabled={running}
-          aria-busy={running}
-          className="inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 rounded-xl bg-teal px-5 font-medium text-white shadow-sm transition-colors hover:bg-teal-dark focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal/30 disabled:cursor-wait"
-        >
-          {running ? <Spinner /> : <ShieldCheck className="h-4 w-4" aria-hidden="true" />}
-          {running ? 'Running audit…' : 'Run Leakage Audit'}
-        </button>
       </div>
 
       {/* ---------------------------------------------- status overview cards */}
@@ -139,12 +103,14 @@ export default function PipelineLeakage() {
             NFC Unicode + Deduplicated
           </span>
           <p className="mt-4 text-sm text-ink">
-            <strong className="font-bold">{TOTAL_PARAGRAPHS.toLocaleString('en-US')}</strong>{' '}
-            paragraphs cleaned, <strong className="font-bold">0</strong> corrupted lines removed
+            <strong className="font-bold">{fmt(TOTAL_PARAGRAPHS)}</strong> of{' '}
+            {fmt(cleaning.raw.train + cleaning.raw.test)} paragraphs kept,{' '}
+            <strong className="font-bold">{fmt(cleaning.removed_total.train + cleaning.removed_total.test)}</strong>{' '}
+            removed (duplicates, conflicting labels, no letters, train rows also in test)
           </p>
         </Card>
 
-        <Card id="card-split" title={`Reproducible Split (Seed ${SEED})`}>
+        <Card id="card-split" title={`Reproducible Split (Seed ${split.seed})`}>
           <div
             role="img"
             aria-label={`Split distribution: ${DATASET_STATS.splits
@@ -178,17 +144,12 @@ export default function PipelineLeakage() {
           </ul>
           <p className="mt-4 flex items-center gap-1.5 font-mono text-xs text-muted">
             <FileCheck2 className="h-3.5 w-3.5" aria-hidden="true" />
-            split_ids.parquet saved
+            {split.split_ids_file} saved
           </p>
         </Card>
 
         <Card id="card-leak" title="Data Leakage Status">
-          {running ? (
-            <p className="mt-3 inline-flex items-center gap-2 rounded-xl border border-border bg-subtle px-3.5 py-2 text-base font-bold text-muted">
-              <Spinner className="h-5 w-5" />
-              Checking…
-            </p>
-          ) : clean ? (
+          {clean ? (
             <p className="mt-3 inline-flex items-center gap-2 rounded-xl border border-teal/30 bg-teal/10 px-3.5 py-2 text-base font-bold text-teal">
               <ShieldCheck className="h-5 w-5" aria-hidden="true" />
               {overlapPct}% Overlap · CLEAN
@@ -200,7 +161,7 @@ export default function PipelineLeakage() {
             </p>
           )}
           <p className="mt-4 text-sm text-ink">
-            Train vs Test overlap: {trainTest.count} rows (checked via SHA-256 hashes)
+            Train vs Test overlap: {trainTest.count} rows (same id, identical or near-identical text)
           </p>
         </Card>
       </div>
@@ -238,19 +199,12 @@ export default function PipelineLeakage() {
                     </td>
                     <td className="hidden px-4 py-3.5 text-ink sm:table-cell sm:px-5">{resultText(c)}</td>
                     <td className="px-4 py-3.5 sm:px-5">
-                      {running ? (
-                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-muted">
-                          <Spinner className="h-4 w-4" />
-                          CHECKING
-                        </span>
-                      ) : (
-                        <span
-                          className={`inline-flex items-center gap-1.5 text-xs font-medium tracking-wide ${ui.wrap}`}
-                        >
-                          <ui.Icon className={`h-4 w-4 ${ui.icon}`} aria-hidden="true" />
-                          {ui.label}
-                        </span>
-                      )}
+                      <span
+                        className={`inline-flex items-center gap-1.5 text-xs font-medium tracking-wide ${ui.wrap}`}
+                      >
+                        <ui.Icon className={`h-4 w-4 ${ui.icon}`} aria-hidden="true" />
+                        {ui.label}
+                      </span>
                     </td>
                   </tr>
                 );
@@ -266,7 +220,7 @@ export default function PipelineLeakage() {
           <h3 id="features-title" className="text-lg font-bold text-ink">
             Feature Extraction Pipeline (TF-IDF)
           </h3>
-          <span className="rounded-md bg-chip px-2 py-0.5 font-mono text-xs text-[#2B4442]">features.py</span>
+          <span className="rounded-md bg-chip px-2 py-0.5 font-mono text-xs text-[#2B4442]">ml/features.py</span>
         </div>
 
         <pre
@@ -295,8 +249,8 @@ export default function PipelineLeakage() {
       </section>
 
       <p className="text-xs text-muted">
-        Simulated data: audit results are placeholders until the data pipeline and an audit endpoint
-        are available.
+        Figures come from <span className="font-mono">data/processed/stats.json</span>. Re-run{' '}
+        <span className="font-mono">python -m data.pipeline</span> and rebuild the console to refresh them.
       </p>
     </div>
   );

@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import App from '../App.jsx';
+import ModelEvaluation from '../components/ModelEvaluation.jsx';
 import ModelRegistryReports from '../components/ModelRegistryReports.jsx';
 import { clearAdminToken, onUnauthorized, setAdminToken } from '../api/client.js';
 import { resetLanguagesCache } from '../hooks/useLanguages.js';
@@ -15,6 +16,19 @@ const MODELS = [
   { version: 'v2', algorithm: 'Linear SVM', created_at: '2026-11-01T10:00:00Z', data_version: 'sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb', status: 'active', metrics: { accuracy: 0.932, macro_f1: 0.926 } },
   { version: 'v3', algorithm: 'Linear SVM (tuned)', created_at: '2026-11-05T08:00:00Z', data_version: 'sha256:cccccccccccccccccccccccccccccccc', status: 'candidate', metrics: { accuracy: 0.94, macro_f1: 0.935 } },
 ];
+// GET /api/v1/models/{version}: only v2 has details here, v1 / v3 answer 404 like a version without them.
+const DETAILS = {
+  v2: {
+    version: 'v2',
+    meta: { algorithm: 'svm' },
+    metrics: {
+      accuracy: 0.932, macro_f1: 0.926, latency_ms_p95: 2.5,
+      top_confused_pairs: [{ true: 'bos', pred: 'hrv', count: 120 }],
+      error_samples: [{ id: 'te_1', text: 'Dobar dan svima', true: 'hrv', pred: 'bos', length: '20', confidence: 0.52 }],
+    },
+    train_info: { hyperparameter: 'C', value: 0.5, val: { full: { accuracy: 0.94 } } },
+  },
+};
 const REPORTS = () => [
   { report_id: 11, text: 'Kal meeting hai, please sab log time par aana.', predicted_language: 'eng', confidence: 0.71, model_version: 'v2', reason: 'wrong_language', suggested_language: 'hin', comment: 'Hinglish', status: 'new', verified_language: null, created_at: '2026-10-31T16:42:10Z' },
   { report_id: 12, text: 'Ovo je jedan od najstarijih gradova.', predicted_language: 'hrv', confidence: 0.54, model_version: 'v1', reason: 'wrong_language', suggested_language: null, comment: null, status: 'new', verified_language: null, created_at: '2026-10-30T11:05:37Z' },
@@ -31,8 +45,10 @@ function fakeApi(opts = {}) {
     const method = init.method ?? 'GET';
     st.calls.push({ method, url, headers: init.headers ?? {}, body: init.body ? JSON.parse(init.body) : undefined });
     if (opts.down) throw new TypeError('Failed to fetch');
-    const protectedRoute = url.startsWith('/api/v1/reports') || url.startsWith('/api/v1/models/');
+    const protectedRoute = url.startsWith('/api/v1/reports') || /^\/api\/v1\/models\/(promote|rollback)$/.test(url);
     if (protectedRoute && init.headers?.['X-Admin-Token'] !== token) return json({ detail: 'Invalid admin token' }, 401);
+    const detail = url.match(/^\/api\/v1\/models\/(v\d+)$/);
+    if (detail) return DETAILS[detail[1]] ? json(DETAILS[detail[1]]) : json({ detail: 'Not Found' }, 404);
 
     if (url === '/api/v1/languages') return json(LANGS);
     if (url === '/api/v1/models') return json(st.models);
@@ -340,5 +356,34 @@ describe('admin token control + App (MV-5)', () => {
     fireEvent.click(screen.getByRole('tab', { name: 'Model Registry & Reports' }));
     expect(await screen.findByRole('heading', { name: 'Model Registry & User Feedback Audit' })).toBeTruthy(); // hashchange is async
     expect(window.location.hash).toBe('#registry');
+  });
+});
+
+describe('model evaluation (DS-03, DS-04)', () => {
+  const rows = () => within(screen.getByRole('table', { name: /Comparison of the trained models/ })).getAllByRole('row').slice(1);
+
+  it('lists the API versions (active first) and the computed baseline, with the active model analysed', async () => {
+    fakeApi(); render(<ModelEvaluation />);
+    await screen.findByText('Linear SVM (v2 - Active)');
+    const cells = rows().map((r) => [...r.cells].map((c) => c.textContent));
+    expect(cells.map((c) => c[0])).toEqual(['Linear SVM v2Active', 'Unknown v1', 'Unknown v3', 'Majority Class baseline']);
+    expect(cells[0].slice(1)).toEqual(['svm', 'C = 0.5', '94.0%', '93.2%', '0.926', '2.5ms']);
+    expect(cells[1].slice(3)).toEqual(['—', '—', '—', '—']); // details 404: row kept without figures
+    expect(cells[3].slice(4, 6)).toEqual(['0.4%', '<0.001']); // majority class of the real split
+    expect(screen.getByText(/Confused: ~\d+% \(120\)/)).toBeTruthy();
+    expect(screen.getAllByText('Dobar dan svima')[0].getAttribute('lang')).toBe('hr'); // wiki_code from labels.csv
+  });
+
+  it('a version without error samples says how to record them', async () => {
+    fakeApi(); render(<ModelEvaluation />);
+    fireEvent.click(await screen.findByLabelText('Unknown (v1 - Archived)'));
+    expect(screen.getByText(/No error samples recorded for v1/)).toBeTruthy();
+    expect(screen.queryByRole('heading', { name: 'Most Confused Language Pairs' })).toBeNull();
+  });
+
+  it('API down: says so and keeps only the baseline', async () => {
+    fakeApi({ down: true }); render(<ModelEvaluation />);
+    expect((await screen.findByRole('alert')).textContent).toMatch(/API unreachable/);
+    expect(rows()).toHaveLength(1);
   });
 });

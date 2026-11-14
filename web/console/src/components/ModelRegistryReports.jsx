@@ -19,8 +19,9 @@ import LanguageCombobox from './LanguageCombobox.jsx';
 // ------------------------------------------------------------------ fallbacks
 // Shown when the API cannot be reached. Obviously-sample values, never presented as live.
 const FALLBACK_MODELS = [
-  { version: 'v1', algorithm: 'Multinomial Naive Bayes', status: 'active', createdAt: '2026-10-20T09:30:00Z', dataVersion: 'sha256:sample-offline-v1', accuracy: 0.915, macroF1: 0.908 },
-  { version: 'v2', algorithm: 'Linear SVM', status: 'candidate', createdAt: '2026-11-01T10:00:00Z', dataVersion: 'sha256:sample-offline-v2', accuracy: 0.932, macroF1: 0.926 },
+  // Figures of the runs reported in ml/README.md (12/11/2026); the API is the source when it is up.
+  { version: 'v1', algorithm: 'naive_bayes', status: 'active', createdAt: '2026-11-12T09:30:00Z', dataVersion: 'sha256:sample-offline-v1', accuracy: 0.9492, macroF1: 0.9521 },
+  { version: 'v2', algorithm: 'svm', status: 'candidate', createdAt: '2026-11-12T11:00:00Z', dataVersion: 'sha256:sample-offline-v2', accuracy: 0.968, macroF1: 0.969 },
 ];
 
 // Same fields as the API's ReportItem.

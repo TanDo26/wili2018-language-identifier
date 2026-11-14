@@ -14,44 +14,7 @@ function barWidth(confidence) {
 }
 
 /**
- * Finds quoted n-grams such as 'thi' or "ngư" inside an explanation sentence.
- * An opening quote must follow the start/space/punctuation and a closing quote must
- * precede the end/space/punctuation, so apostrophes in words ("Vietnamese's") are ignored.
- * (Lookahead only: lookbehind is not supported by older Safari versions.)
- */
-const NGRAM_RE = /(^|[\s(,:;])(['"‘“])([^'"‘’“”]{1,12}?)(['"’”])(?=$|[\s),.:;!?])/g;
-
-/** Splits text into plain and highlighted (n-gram) parts. */
-function splitExplanation(text) {
-  const parts = [];
-  let last = 0;
-  let m;
-  NGRAM_RE.lastIndex = 0;
-  while ((m = NGRAM_RE.exec(text)) !== null) {
-    const [, lead, open, gram] = m;
-    const gramStart = m.index + lead.length + open.length;
-    parts.push({ text: text.slice(last, gramStart), highlight: false });
-    parts.push({ text: gram, highlight: true });
-    last = gramStart + gram.length; // closing quote stays in the next plain part
-  }
-  if (last < text.length) parts.push({ text: text.slice(last), highlight: false });
-  return parts;
-}
-
-function ExplanationText({ text }) {
-  return splitExplanation(text).map((part, i) =>
-    part.highlight ? (
-      <strong key={i} className="font-bold text-teal">
-        {part.text}
-      </strong>
-    ) : (
-      <span key={i}>{part.text}</span>
-    ),
-  );
-}
-
-/**
- * Prediction result (EU-02) with low-confidence alert (EU-05, FR3) and model explanation.
+ * Prediction result (EU-02) with low-confidence alert (EU-05, FR3) and the API's notes.
  *
  * Props
  * @param {object|null} result  PredictResponse from openapi.yaml:
@@ -138,17 +101,17 @@ export default function ResultCard({ result, onOpenReport }) {
         </div>
       )}
 
-      {/* Model explanation: n-gram triggers returned by the model */}
+      {/* explanation: notes computed by the API from the probabilities (low confidence, close candidates) */}
       {explanation.length > 0 && (
         <>
-          <h3 className="mb-2 mt-4 text-[13px] font-medium text-muted">Model explanation</h3>
+          <h3 className="mb-2 mt-4 text-[13px] font-medium text-muted">Notes</h3>
           <ul className="space-y-2">
             {explanation.map((line, i) => (
               <li
                 key={i}
                 className="break-words rounded-lg border border-border bg-subtle p-2.5 font-mono text-xs leading-relaxed text-ink"
               >
-                <ExplanationText text={line} />
+                {line}
               </li>
             ))}
           </ul>

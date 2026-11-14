@@ -109,7 +109,12 @@ def test_train_and_evaluate_follow_retrain_contract(data_dir, tmp_path, algorith
     assert list(saved["by_length"]) == ["20", "30", "50", "100", "full"]
     assert saved["by_length"]["full"]["n"] == saved["n"] == 4
     assert saved["no_overlap"]["n"] == 3  # te_000 có văn bản chung với train
-    assert {"top_confused_pairs", "mixed_language_check", "latency_ms_median", "latency_ms_p95"} <= set(saved)
+    assert {"top_confused_pairs", "error_samples", "mixed_language_check", "latency_ms_median",
+            "latency_ms_p95"} <= set(saved)
+    for sample in saved["error_samples"]:
+        assert sample["true"] != sample["pred"] and sample["length"] in saved["by_length"]
+    if algorithm == "baseline":  # đoán 1 lớp nên mỗi độ dài có 3/4 đoạn sai
+        assert len(saved["error_samples"]) == 2 * len(saved["by_length"])
 
     info = json.loads((out / "train_info.json").read_text(encoding="utf-8"))
     assert info["algorithm"] == algorithm

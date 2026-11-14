@@ -1,13 +1,13 @@
 # WiLI-2018 End-User App (`web/user/`)
 
 React + Vite + Tailwind CSS front end for the language identification API: paste text, get the
-detected language (with confidence, explanation and candidates), and report wrong predictions.
+detected language (with confidence, notes and candidates), and report wrong predictions.
 
 ## Quick start
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173, proxies /api to the backend
+npm run dev        # http://localhost:3000, proxies /api to the backend
 npm test           # Vitest unit + component tests
 npm run lint       # ESLint (incl. eslint-plugin-react-hooks)
 npm run build      # production build in dist/
@@ -45,20 +45,15 @@ which matches Python's `len(text.strip())` on the server. Emoji count as one cha
 ### Language list
 
 `useLanguages()` loads `GET /api/v1/languages` once, caches it in memory and `sessionStorage`, and
-falls back to `src/data/languages.fallback.json` when the API is unreachable. Picks are validated
-strictly against this list (hyphenated labels such as `zh-yue` and `be-tarask` are valid; arbitrary
-3-letter codes are not).
+falls back to the `languages` list of `data/processed/stats.json` (written by `python -m data.pipeline`,
+same codes and names as `labels.csv`) when the API is unreachable. That file lives outside `web/user`,
+so `vite.config.js` allows `../..` in `server.fs.allow`. Picks are validated strictly against this
+list (hyphenated labels such as `zh-yue` and `be-tarask` are valid; arbitrary 3-letter codes are not).
 
-To regenerate the fallback from the dataset's labels file:
+### Notes under the result
 
-```bash
-npm run gen:languages                  # reads ../../data/processed/labels.csv
-npm run gen:languages path/to/labels.csv
-```
-
-It reads the `Label` (code) and `English` (name) columns and keeps the existing file if the CSV is
-missing. The committed fallback holds the 235 WiLI codes; its names come from the ISO 639-3
-registry, so regenerate it from `labels.csv` to use the dataset's own names.
+`explanation` holds short notes computed by the API from the probabilities, e.g. low confidence or two
+candidates with close scores. They are shown as plain text under "Notes".
 
 ## Project layout
 
@@ -67,11 +62,10 @@ src/
   App.jsx                    page shell, API calls, error messages
   components/
     TextInputCard.jsx        input + live validation (getStatus, countChars)
-    ResultCard.jsx           prediction, model version badge, explanation, candidates
+    ResultCard.jsx           prediction, model version badge, notes, candidates
     ReportDialog.jsx         accessible report dialog (validateReportForm)
     LanguageCombobox.jsx     searchable language picker
   hooks/useLanguages.js      GET /languages + cache + fallback
   lib/languages.js           pure search / strict-resolve helpers
-  data/languages.fallback.json
   __tests__/                 Vitest tests
 ```

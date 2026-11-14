@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { countChars, getStatus } from '../components/TextInputCard.jsx';
 import { REPORT_REASONS, validateReportForm } from '../components/ReportDialog.jsx';
-import fallback from '../data/languages.fallback.json';
+import stats from '../../../../data/processed/stats.json';
+import { cleanLanguages } from '../hooks/useLanguages.js';
+
+const fallback = cleanLanguages(stats.languages); // what useLanguages() offers when the API is down
 
 describe('getStatus (TextInputCard): trimmed Unicode code points, 20..5,000', () => {
   it('empty, and "touched" empty', () => {

@@ -1,14 +1,17 @@
-// Mock data for the Dataset Explorer (DS-01) until the API exposes the dataset.
-// The sentences below are short, illustrative paragraphs written for the UI.
+// Dataset figures come from data/processed/stats.json, written by `python -m data.pipeline`.
+// The sentences in SAMPLES below are short, illustrative paragraphs written for the UI.
 // They are NOT rows taken from WiLI-2018.
+import stats from '../../../../data/processed/stats.json';
+
+export { stats };
 
 export const DATASET_STATS = {
-  languages: 235,
-  // Split sizes as agreed by the team (sum = 235,000 paragraphs).
+  languages: stats.num_languages,
+  // Split sizes after cleaning (see stats.cleaning for what was removed from the 235,000 raw paragraphs).
   splits: [
-    { id: 'train', label: 'Train', short: 'train', size: 117500 },
-    { id: 'validation', label: 'Validation', short: 'val', size: 11750 },
-    { id: 'test', label: 'Test', short: 'test', size: 105750 },
+    { id: 'train', label: 'Train', short: 'train', size: stats.splits.train.num_samples },
+    { id: 'validation', label: 'Validation', short: 'val', size: stats.splits.val.num_samples },
+    { id: 'test', label: 'Test', short: 'test', size: stats.splits.test.num_samples },
   ],
 };
 

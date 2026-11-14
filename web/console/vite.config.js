@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     server: {
       port: 3001,
+      fs: { allow: ['../..'] }, // src/data/sampleDataset.js imports data/processed/stats.json
       proxy: {
         '/api': { target, changeOrigin: true },
         '/health': { target, changeOrigin: true },

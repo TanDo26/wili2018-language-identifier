@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import fallbackJson from '../data/languages.fallback.json';
+import stats from '../../../../data/processed/stats.json'; // A's pipeline output, same names as labels.csv
 
 // '' in dev (Vite proxies /api); set VITE_API_BASE_URL in production.
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '';
@@ -55,7 +55,7 @@ export function resetLanguagesCache() {
 
 /**
  * Resolves the 235 WiLI languages. Order: memory -> sessionStorage -> GET /api/v1/languages ->
- * static fallback generated from data/processed/labels.csv. A fallback result is NOT cached, so the
+ * data/processed/stats.json (bundled at build time). A fallback result is NOT cached, so the
  * next call retries the API.
  */
 export function loadLanguages() {
@@ -78,7 +78,7 @@ export function loadLanguages() {
       memory = { languages: list, source: 'api' };
       return memory;
     } catch {
-      return { languages: cleanLanguages(fallbackJson) ?? EMPTY, source: 'fallback' };
+      return { languages: cleanLanguages(stats.languages) ?? EMPTY, source: 'fallback' };
     } finally {
       inflight = null;
     }

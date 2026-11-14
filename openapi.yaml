@@ -244,6 +244,30 @@ paths:
                   "$ref": "#/components/schemas/ModelVersion"
                 type: array
                 title: "Response List Models Api V1 Models Get"
+  "/api/v1/models/{version}":
+    get:
+      summary: "Chi tiết một version: meta.json, metrics.json, train_info.json"
+      operationId: get_model_api_v1_models__version__get
+      parameters:
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Version
+      responses:
+        "200":
+          description: "Successful Response"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ModelDetails"
+        "404":
+          description: "Không tìm thấy"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
   /api/v1/models/promote:
     post:
       summary: "Đưa một version lên chạy (admin)"
@@ -472,6 +496,35 @@ components:
         - message
         - active_version
       title: ModelActionResponse
+    ModelDetails:
+      properties:
+        version:
+          type: string
+          title: Version
+          examples:
+            - v1
+        meta:
+          additionalProperties: true
+          type: object
+          title: Meta
+          description: "meta.json do scripts/retrain.py ghi (thuật toán, đặc trưng, dữ liệu)"
+        metrics:
+          additionalProperties: true
+          type: object
+          title: Metrics
+          description: "metrics.json do ml.evaluate ghi (tập test, theo độ dài, cặp nhầm)"
+        train_info:
+          additionalProperties: true
+          type: object
+          title: "Train Info"
+          description: "train_info.json do ml.train ghi (tham số, điểm trên val)"
+      type: object
+      required:
+        - version
+        - meta
+        - metrics
+        - train_info
+      title: ModelDetails
     ModelVersion:
       properties:
         version:
@@ -503,6 +556,14 @@ components:
           description: "Từ meta.json"
           examples:
             - "2026-11-01T10:00:00+00:00"
+        data_version:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: "Data Version"
+          description: "sha256 của data/processed/train.csv lúc train (meta.json)"
+          examples:
+            - "sha256:7be0be3beab2d802cfc4a344a4eaad4666065053beaacac69957d2c049847148"
         accuracy:
           anyOf:
             - type: number

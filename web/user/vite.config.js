@@ -10,6 +10,8 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     server: {
+      port: 3000, // web/console links here (VITE_USER_APP_URL)
+      fs: { allow: ['../..'] }, // src/hooks/useLanguages.js imports data/processed/stats.json
       proxy: {
         '/api': { target, changeOrigin: true },
         '/health': { target, changeOrigin: true },

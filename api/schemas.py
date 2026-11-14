@@ -1,6 +1,6 @@
 """Request/response schema của API. openapi.yaml được sinh từ đây và api/main.py (python -m api.export_openapi)."""
 import enum
-from typing import Annotated, List, Literal, Optional
+from typing import Annotated, Any, Dict, List, Literal, Optional
 
 from pydantic import BaseModel, Field, StringConstraints
 
@@ -93,8 +93,17 @@ class ModelVersion(BaseModel):
     status: Literal["active", "candidate", "archived"] = Field(
         ..., description="active: đang chạy; archived: từng active; candidate: chưa từng active")
     created_at: Optional[str] = Field(None, description="Từ meta.json", examples=["2026-11-01T10:00:00+00:00"])
+    data_version: Optional[str] = Field(None, description="sha256 của data/processed/train.csv lúc train (meta.json)",
+                                        examples=["sha256:7be0be3beab2d802cfc4a344a4eaad4666065053beaacac69957d2c049847148"])
     accuracy: Optional[float] = Field(None, description="Từ metrics.json (tập test)", examples=[0.948])
     macro_f1: Optional[float] = Field(None, description="Từ metrics.json (tập test)", examples=[0.950])
+
+
+class ModelDetails(BaseModel):
+    version: str = Field(..., examples=["v1"])
+    meta: Dict[str, Any] = Field(..., description="meta.json do scripts/retrain.py ghi (thuật toán, đặc trưng, dữ liệu)")
+    metrics: Dict[str, Any] = Field(..., description="metrics.json do ml.evaluate ghi (tập test, theo độ dài, cặp nhầm)")
+    train_info: Dict[str, Any] = Field(..., description="train_info.json do ml.train ghi (tham số, điểm trên val)")
 
 
 class PromoteRequest(BaseModel):

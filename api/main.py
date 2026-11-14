@@ -36,6 +36,7 @@ from api.schemas import (
     LanguageItem,
     MessageResponse,
     ModelActionResponse,
+    ModelDetails,
     ModelVersion,
     PredictRequest,
     PredictResponse,
@@ -449,15 +450,27 @@ def list_models():
             version_status = "archived"
         else:
             version_status = "candidate"
+        train_sha = (meta.get("data_version") or {}).get("train_sha256")
         versions.append(ModelVersion(
             version=version,
             algorithm=meta.get("algorithm"),
             status=version_status,
             created_at=meta.get("created_at"),
+            data_version=f"sha256:{train_sha}" if train_sha else None,
             accuracy=metrics.get("accuracy"),
             macro_f1=metrics.get("macro_f1"),
         ))
     return versions
+
+
+@app.get("/api/v1/models/{version}", response_model=ModelDetails, responses=errors(404),
+         summary="Chi tiết một version: meta.json, metrics.json, train_info.json")
+def get_model(version: str):
+    if version not in available_versions():
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Model version '{version}' not found.")
+    version_dir = get_models_dir() / version
+    return ModelDetails(version=version, **{name: read_json_file(version_dir / f"{name}.json")
+                                           for name in ("meta", "metrics", "train_info")})
 
 
 @app.post("/api/v1/models/promote", response_model=ModelActionResponse,

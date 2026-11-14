@@ -32,6 +32,10 @@ make retrain ARGS="--algorithm svm"      # baseline | naive_bayes | svm, xem ml/
 # Chạy API local
 uvicorn api.main:app --reload
 
+# Web (cần API ở :8000; Vite chuyển /api tới đó): end-user ở :3000, console Data Scientist ở :3001
+cd web/user && npm install && npm run dev
+cd web/console && npm install && npm run dev
+
 # Chạy test (Windows: python -m pytest data/tests experiments/tests scripts/tests ml/tests api/tests)
 make test
 

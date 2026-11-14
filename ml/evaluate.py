@@ -9,6 +9,7 @@ metrics.json (scripts/retrain.py và GET /api/v1/models đọc accuracy, macro_f
   no_overlap              {accuracy, macro_f1, n} trên các đoạn test không có văn bản chung với train
                           (overlap_with_train.csv của data.check_leakage)
   top_confused_pairs      15 cặp (nhãn đúng -> nhãn đoán) nhầm nhiều nhất trên test.csv
+  error_samples           tối đa 2 đoạn đoán sai mỗi độ dài (chọn ngẫu nhiên theo SEED), cho web/console
   mixed_language_check    ghép 2 đoạn test khác ngôn ngữ: tỉ lệ dự đoán là một trong hai ngôn ngữ
   latency_ms_median/p95   thời gian dự đoán 1 đoạn như API (chuẩn hóa + vectorize + predict_proba)
 """
@@ -52,6 +53,17 @@ def confused_pairs(y_true, y_pred, top: int = 15) -> list[dict]:
     wrong = pd.DataFrame({"true": y_true, "pred": y_pred})[y_true != y_pred]
     counts = wrong.value_counts().head(top)
     return [{"true": t, "pred": p, "count": int(c)} for (t, p), c in counts.items()]
+
+
+def error_samples(model, combined: pd.DataFrame, pred: np.ndarray, per_bucket: int = 2) -> list[dict]:
+    wrong = (combined["label"] != pred).to_numpy()
+    picked = (combined[wrong].assign(pred=pred[wrong]).sample(frac=1, random_state=SEED)
+              .groupby("bucket", sort=False).head(per_bucket))
+    if picked.empty:
+        return []
+    confidence = model.predict_proba(picked["text"].tolist()).max(axis=1)
+    return [{"id": r.id, "text": r.text[:300], "true": r.label, "pred": r.pred, "length": r.bucket,
+             "confidence": round(float(c), 4)} for r, c in zip(picked.itertuples(), confidence)]
 
 
 def mixed_language_check(model, test: pd.DataFrame, n_pairs: int = 500) -> dict:
@@ -103,6 +115,7 @@ def evaluate(model_dir: Path, data_dir: Path) -> dict:
         print(f"Không thấy {rel(overlap_path)}: bỏ qua no_overlap (chạy `python -m data.check_leakage`).")
 
     metrics["top_confused_pairs"] = confused_pairs(y_test, pred_test)
+    metrics["error_samples"] = error_samples(model, combined, pred)
     metrics["mixed_language_check"] = mixed_language_check(model, test)
     metrics.update(latency(model, test["text"].tolist()))
     metrics["seconds_total"] = round(time.time() - t0, 1)

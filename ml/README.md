@@ -38,7 +38,7 @@ Thêm thuật toán mới: tạo `ml/<tên>.py` có 4 thành phần như trên, 
 |---|---|---|
 | `model.joblib` | `ml.train` | sklearn `Pipeline(features=TfidfVectorizer, classifier=...)`. API nạp trực tiếp và gọi `predict_proba` trên văn bản đã qua `data.common.normalize_text` |
 | `train_info.json` | `ml.train` | thuật toán, tham số, kết quả `--tune`, macro-F1 trên val theo độ dài, số mẫu, thời gian |
-| `metrics.json` | `ml.evaluate` | `accuracy`, `macro_f1`, `n` trên `test.csv`; `by_length` (20/30/50/100 ký tự và đầy đủ); `no_overlap`; `top_confused_pairs`; `mixed_language_check`; `latency_ms_median`, `latency_ms_p95` |
+| `metrics.json` | `ml.evaluate` | `accuracy`, `macro_f1`, `n` trên `test.csv`; `by_length` (20/30/50/100 ký tự và đầy đủ); `no_overlap`; `top_confused_pairs`; `error_samples` (tối đa 2 đoạn sai mỗi độ dài, cho tab Model Evaluation của `web/console`); `mixed_language_check`; `latency_ms_median`, `latency_ms_p95`. API trả nguyên file qua `GET /api/v1/models/{version}` |
 | `meta.json` | `scripts/retrain.py` | version, thời điểm tạo, thuật toán, preset, tham số, phiên bản dữ liệu, git commit |
 
 ## Dữ liệu và cách chọn tham số

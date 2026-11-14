@@ -30,7 +30,8 @@ def add_version(models_dir, version, accuracy=0.9):
     joblib.dump(model, version_dir / "model.joblib")
     (version_dir / "metrics.json").write_text(json.dumps({"accuracy": accuracy, "macro_f1": accuracy - 0.01}))
     (version_dir / "meta.json").write_text(json.dumps(
-        {"version": version, "algorithm": "naive_bayes", "created_at": "2026-11-11T00:00:00+00:00"}))
+        {"version": version, "algorithm": "naive_bayes", "created_at": "2026-11-11T00:00:00+00:00",
+         "data_version": {"train_sha256": "abc123"}}))
 
 
 @pytest.fixture
@@ -228,8 +229,18 @@ def test_admin_disabled_without_admin_token(models_dir, monkeypatch, method, pat
 def test_list_models_reads_metrics_and_meta(client):
     assert client.get("/api/v1/models").json() == [{
         "version": "v1", "algorithm": "naive_bayes", "status": "active",
-        "created_at": "2026-11-11T00:00:00+00:00", "accuracy": 0.9, "macro_f1": 0.89,
+        "created_at": "2026-11-11T00:00:00+00:00", "data_version": "sha256:abc123", "accuracy": 0.9, "macro_f1": 0.89,
     }]
+
+
+def test_model_details_returns_saved_json(client, models_dir):
+    (models_dir / "v1" / "train_info.json").write_text(json.dumps({"hyperparameter": "alpha", "value": 0.01}))
+    body = client.get("/api/v1/models/v1").json()
+    assert body["metrics"] == {"accuracy": 0.9, "macro_f1": 0.89}
+    assert body["meta"]["algorithm"] == "naive_bayes"
+    assert body["train_info"] == {"hyperparameter": "alpha", "value": 0.01}
+    for missing in ("v9", "draft", "..%2Fv1"):
+        assert client.get(f"/api/v1/models/{missing}").status_code == 404
 
 
 def test_first_start_uses_newest_version(models_dir):
